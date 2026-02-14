@@ -271,14 +271,27 @@ export default function Page() {
         border: "none",
         cursor: "pointer"
       }}
-      onClick={() => {
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = "tailored_resume.docx";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }}
+      onClick={async () => {
+  if (!downloadUrl) return;
+
+  const res = await fetch(downloadUrl);
+  if (!res.ok) {
+    alert("Download failed");
+    return;
+  }
+
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = "tailored_resume.docx";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(objectUrl);
+}}
     >
       Force download
     </button>
