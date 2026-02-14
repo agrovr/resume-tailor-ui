@@ -103,8 +103,8 @@ export default function Page() {
     if (!r.ok) throw new Error("Export failed");
 
     const data = (await r.json()) as ExportResponse;
-    setDownloadUrl(data.download_url);
-    return data.download_url;
+    setDownloadUrl(`${baseUrl}/download/${data.download_filename}`);
+    return `${baseUrl}/download/${data.download_filename}`;
   }
 
   async function onRun() {
