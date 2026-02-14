@@ -25,7 +25,7 @@ type TailorResult = {
 };
 
 type UploadResponse = { resume_id: string; filename: string };
-type ExportResponse = { saved_to: string; download_url: string };
+type ExportResponse = { saved_to: string; download_filename: string };
 
 export default function Page() {
   const baseUrl = useMemo(() => {
