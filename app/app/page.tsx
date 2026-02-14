@@ -245,36 +245,36 @@ export default function Page() {
           )}
 
           {downloadUrl && (
-            <div style={{ marginTop: 14, padding: 12, borderRadius: 12, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.25)" }}>
-              <b>Download:</b>{" "}
-              <button
-  onClick={async () => {
-    const res = await fetch(downloadUrl);
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
+  <div style={{ marginTop: 14, padding: 12, borderRadius: 12 }}>
+    <b>Download:</b>{" "}
+    <button
+      onClick={async () => {
+        const res = await fetch(downloadUrl);
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "tailored_resume.docx";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-  }}
-  style={{
-    background: "transparent",
-    color: "white",
-    textDecoration: "underline",
-    border: "none",
-    cursor: "pointer",
-    padding: 0,
-  }}
->
-  tailored_resume.docx
-</button>
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "tailored_resume.docx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      }}
+      style={{
+        background: "transparent",
+        color: "white",
+        textDecoration: "underline",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+      }}
+    >
+      tailored_resume.docx
+    </button>
+  </div>
+)}
 
-            </div>
-          )}
         </header>
 
         <div
