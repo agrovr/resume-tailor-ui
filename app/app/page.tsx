@@ -26,6 +26,7 @@ type TailorResult = {
 
 type UploadResponse = { resume_id: string; filename: string };
 type ExportResponse = { saved_to: string; download_filename: string };
+type IconName = "spark" | "mobile" | "workflow";
 
 const styles = {
   page: {
@@ -427,10 +428,62 @@ function Metric({ label, value, hint }: { label: string; value: string; hint: st
   );
 }
 
-function Spotlight({ title, text }: { title: string; text: string }) {
+function Glyph({ name, size = 18 }: { name: IconName; size?: number }) {
+  const common: React.CSSProperties = { width: size, height: size, display: "block" };
+
+  if (name === "mobile") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+        <path d="M10 5.5h4" />
+        <path d="M11 18.5h2" />
+      </svg>
+    );
+  }
+
+  if (name === "workflow") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+        <path d="M6 6h12" />
+        <path d="M6 12h7" />
+        <path d="M6 18h10" />
+        <circle cx="16.5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={common}>
+      <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" />
+    </svg>
+  );
+}
+
+function IconBadge({ name }: { name: IconName }) {
+  return (
+    <div
+      style={{
+        width: 38,
+        height: 38,
+        borderRadius: 14,
+        marginBottom: 12,
+        display: "grid",
+        placeItems: "center",
+        color: "rgba(255,255,255,0.96)",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))",
+        border: "1px solid rgba(255,255,255,0.12)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+      }}
+    >
+      <Glyph name={name} />
+    </div>
+  );
+}
+
+function Spotlight({ icon, title, text }: { icon: IconName; title: string; text: string }) {
   return (
     <div style={styles.spotlightCard}>
-      <div style={{ width: 38, height: 38, borderRadius: 14, background: "rgba(255,255,255,0.08)", marginBottom: 12 }} />
+      <IconBadge name={icon} />
       <div style={{ fontWeight: 800 }}>{title}</div>
       <div style={{ ...styles.helperText, marginTop: 6 }}>{text}</div>
     </div>
@@ -626,9 +679,9 @@ export default function Page() {
             </div>
 
             <div style={styles.spotlightStack}>
-              <Spotlight title="Cleaner workflow" text="Input, scoring, ATS review, and export are organized into clearer cards." />
-              <Spotlight title="Better mobile feel" text="The layout collapses into a more readable single-column flow on phones." />
-              <Spotlight title="Stronger hierarchy" text="More contrast between primary actions, summary metrics, and detailed results." />
+              <Spotlight icon="workflow" title="Cleaner workflow" text="Input, scoring, ATS review, and export are organized into clearer cards." />
+              <Spotlight icon="mobile" title="Better mobile feel" text="The layout collapses into a more readable single-column flow on phones." />
+              <Spotlight icon="spark" title="Stronger hierarchy" text="More contrast between primary actions, summary metrics, and detailed results." />
             </div>
           </div>
         </section>
@@ -645,7 +698,7 @@ export default function Page() {
         <div className="rt-content-grid" style={styles.contentGrid}>
           <Card
             title="Resume + role input"
-            description="Everything needed to run the tailoring flow."
+            description="Everything needed to run the tailoring flow, with cleaner spacing and a more guided layout."
             right={<span style={styles.chip}>{file ? "Resume selected" : "Upload a .docx"}</span>}
           >
             <div style={styles.fieldStack}>
