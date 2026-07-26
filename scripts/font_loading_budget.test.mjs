@@ -3,7 +3,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const layout = readFileSync("app/layout.tsx", "utf8");
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = [
+  readFileSync("app/globals.css", "utf8"),
+  readFileSync("app/landing.css", "utf8"),
+].join("\n");
 
 test("the root layout only preloads brand-critical font families", () => {
   assert.match(layout, /import \{ Fraunces, Inter \} from "next\/font\/google";/);

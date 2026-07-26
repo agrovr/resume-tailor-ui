@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
+import { landingStylesForAssertions } from "./style_sources.mjs";
 
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = landingStylesForAssertions;
 
 test("landing pricing keeps compact plan contrast without internal line texture", () => {
   assert.match(globals, /\/\* Landing pricing refinement: compact plans with quiet depth and clear status\. \*\//);

@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = [
+  readFileSync("app/globals.css", "utf8"),
+  readFileSync("app/landing.css", "utf8"),
+].join("\n");
 const smoke = readFileSync("scripts/smoke_layout.mjs", "utf8");
 
 const sectionSize = (selector, size) => new RegExp(
@@ -10,7 +13,7 @@ const sectionSize = (selector, size) => new RegExp(
 );
 
 test("landing sections retain offscreen rendering with calibrated desktop space", () => {
-  assert.match(globals, /\.page-shell > section:not\(\.hero\),[\s\S]*?content-visibility:\s*auto;[\s\S]*?contain-intrinsic-size:\s*auto 900px;/);
+  assert.match(globals, /\.page-shell > section:not\(\.hero\)\s*\{[\s\S]*?content-visibility:\s*auto;[\s\S]*?contain-intrinsic-size:\s*auto 900px;/);
   assert.match(globals, /\/\* Keep the landing scroll range stable while below-the-fold sections are skipped\. \*\//);
 
   for (const [selector, size] of [

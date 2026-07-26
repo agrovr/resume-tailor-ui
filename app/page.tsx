@@ -1,3 +1,5 @@
+import "./landing.css";
+
 import NextLink from "next/link";
 import type { ComponentProps } from "react";
 import { AccountAvatar } from "./components/AccountAvatar";
@@ -724,7 +726,7 @@ export default async function Landing() {
   const links = await getLandingLinks();
 
   return (
-    <main className="page-shell">
+    <main className="page-shell landing-page">
       <LandingAnchorSync />
       <Nav
         signedIn={links.signedIn}

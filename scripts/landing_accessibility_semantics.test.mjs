@@ -3,7 +3,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const landing = readFileSync("app/page.tsx", "utf8");
-const stylesheet = readFileSync("app/globals.css", "utf8");
+const stylesheet = [
+  readFileSync("app/globals.css", "utf8"),
+  readFileSync("app/landing.css", "utf8"),
+].join("\n");
 
 test("landing preview artwork stays concise for assistive technology", () => {
   assert.match(

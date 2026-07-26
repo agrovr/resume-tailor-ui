@@ -5,7 +5,9 @@ import test from "node:test";
 const page = readFileSync("app/page.tsx", "utf8");
 const preview = readFileSync("app/components/ResumePreview.tsx", "utf8");
 const templates = readFileSync("app/lib/resumeTemplates.ts", "utf8");
-const stylesheet = readFileSync("app/globals.css", "utf8");
+const globalStyles = readFileSync("app/globals.css", "utf8");
+const landingStyles = readFileSync("app/landing.css", "utf8");
+const stylesheet = [globalStyles, landingStyles].join("\n");
 
 test("landing templates come from the real catalog instead of a duplicate mock list", () => {
   assert.match(page, /import \{ RESUME_TEMPLATES \} from "\.\/lib\/resumeTemplates"/);
@@ -71,7 +73,8 @@ test("featured gallery removes the horizontal rail and document rule clutter", (
   assert.match(stylesheet, /\.template-card\s*\{(?=[^}]*border:\s*0)(?=[^}]*background:\s*transparent)(?=[^}]*box-shadow:\s*none)[^}]*\}/s);
   assert.match(stylesheet, /\.template-card:nth-child\(4n \+ 1\)\s*\{\s*--template-tilt:\s*-0\.65deg;/s);
   assert.match(stylesheet, /\.template-card:hover \.template-thumb,[\s\S]*?\.template-card:focus-within \.template-thumb\s*\{(?=[^}]*border-color:)(?=[^}]*box-shadow:)[^}]*\}/s);
-  assert.match(stylesheet, /\.templates-head::after,[\s\S]*?\.r-section-title::after\s*\{[^}]*content:\s*none;/s);
+  assert.match(landingStyles, /\.templates-head::after,[\s\S]*?content:\s*none;/s);
+  assert.match(globalStyles, /\.r-section-title::after\s*\{[^}]*content:\s*none;/s);
   assert.match(stylesheet, /\.r-section-title\s*\{(?=[^}]*border:\s*0)(?=[^}]*padding:\s*0)[^}]*\}/s);
   assert.match(stylesheet, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.templates-row\s*\{[^}]*grid-template-columns:\s*1fr/s);
 });

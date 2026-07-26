@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { landingStylesForAssertions } from "./style_sources.mjs";
 
 const landingPage = readFileSync("app/page.tsx", "utf8");
 const demo = readFileSync("app/components/LandingStudioDemo.tsx", "utf8");
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = landingStylesForAssertions;
 
 test("landing studio is isolated as an honest client-side sample", () => {
   assert.match(demo, /^"use client";/);

@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { landingStylesForAssertions } from "./style_sources.mjs";
 
 const landingPage = readFileSync("app/page.tsx", "utf8");
-const stylesheet = readFileSync("app/globals.css", "utf8");
+const stylesheet = landingStylesForAssertions;
 
 test("landing nav exposes a signed-in account menu from real account data", () => {
   assert.match(landingPage, /import \{ AccountAvatar \}/);

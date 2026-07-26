@@ -3,7 +3,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const landingPage = readFileSync("app/page.tsx", "utf8");
-const stylesheet = readFileSync("app/globals.css", "utf8");
+const stylesheet = [
+  readFileSync("app/globals.css", "utf8"),
+  readFileSync("app/landing.css", "utf8"),
+].join("\n");
 const mobileGuardStart = stylesheet.indexOf("/* Final mobile landing guardrail:");
 const mobileGuardEnd = stylesheet.indexOf("/* End final mobile landing guardrail. */", mobileGuardStart);
 assert.notEqual(mobileGuardStart, -1, "final mobile landing guardrail is missing");

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { landingStylesForAssertions } from "./style_sources.mjs";
 
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = landingStylesForAssertions;
 const landing = readFileSync("app/page.tsx", "utf8");
 
 test("landing nav uses a compact floating dock instead of a full-width box", () => {

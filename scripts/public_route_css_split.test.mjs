@@ -4,7 +4,9 @@ import test from "node:test";
 
 const globalStyles = readFileSync("app/globals.css", "utf8");
 const rootLayout = readFileSync("app/layout.tsx", "utf8");
+const landingPage = readFileSync("app/page.tsx", "utf8");
 const routeStyles = {
+  landing: readFileSync("app/landing.css", "utf8"),
   help: readFileSync("app/help/help.css", "utf8"),
   status: readFileSync("app/status/status.css", "utf8"),
   support: readFileSync("app/support/support.css", "utf8"),
@@ -32,9 +34,11 @@ test("route styles load from their owning route instead of the root bundle", () 
     assert.match(readFileSync(file, "utf8"), importPattern);
   }
 
+  assert.match(landingPage, /import "\.\/landing\.css"/);
+  assert.match(landingPage, /className="page-shell landing-page"/);
   assert.match(readFileSync("app/components/LegalPage.tsx", "utf8"), /import "\.\.\/public-pages\.css"/);
   assert.doesNotMatch(readFileSync("app/not-found.tsx", "utf8"), /public-pages\.css/);
-  assert.doesNotMatch(rootLayout, /(help|status|support|updates|templates|public-pages)\.css/);
+  assert.doesNotMatch(rootLayout, /(landing|help|status|support|updates|templates|public-pages)\.css/);
 });
 
 test("the root not-found fallback does not preload public-page route styles", () => {
@@ -47,9 +51,16 @@ test("the root not-found fallback does not preload public-page route styles", ()
 });
 
 test("the universal stylesheet no longer carries complete page-owned rule sets", () => {
-  assert.ok(Buffer.byteLength(globalStyles) < 285_000, "universal stylesheet should stay below the route-split budget");
+  assert.ok(Buffer.byteLength(globalStyles) < 165_000, "universal stylesheet should stay below the route-split budget");
+  assert.ok(Buffer.byteLength(routeStyles.landing) < 160_000, "landing stylesheet should stay focused");
 
   const ownershipChecks = [
+    [routeStyles.landing, globalStyles, /\/\* Landing pricing refinement:/],
+    [routeStyles.landing, globalStyles, /\/\* Landing workflow refinement:/],
+    [routeStyles.landing, globalStyles, /\/\* Landing FAQ refinement:/],
+    [routeStyles.landing, globalStyles, /\.pricing-grid\s*\{/],
+    [routeStyles.landing, globalStyles, /\.faq-grid\s*\{/],
+    [routeStyles.landing, globalStyles, /\.dash-demo-reset\s*\{/],
     [routeStyles.help, globalStyles, /\.help-action-grid\s*\{/],
     [routeStyles.status, globalStyles, /\.status-shell\s*\{/],
     [routeStyles.support, globalStyles, /\.support-shell\s*\{/],
@@ -65,6 +76,16 @@ test("the universal stylesheet no longer carries complete page-owned rule sets",
     assert.match(ownerStyles, selector);
     assert.doesNotMatch(universalStyles, selector);
   }
+});
+
+test("landing rules stay isolated after client-side navigation", () => {
+  assert.match(routeStyles.landing, /:where\(\.landing-page\)\.page-shell\s*\{/);
+  assert.match(routeStyles.landing, /:where\(\.landing-page\) \.nav\s*\{/);
+  assert.match(routeStyles.landing, /:where\(\.landing-page\) \.templates\s*\{/);
+  assert.match(routeStyles.landing, /html\[data-theme="dark"\] :where\(\.landing-page\) \.footer\s*\{/);
+  assert.doesNotMatch(routeStyles.landing, /^\.nav\s*\{/m);
+  assert.doesNotMatch(routeStyles.landing, /^\.templates\s*\{/m);
+  assert.doesNotMatch(routeStyles.landing, /^\.footer\s*\{/m);
 });
 
 test("the protected studio auth gate loads the shared login route styles before studio overrides", () => {

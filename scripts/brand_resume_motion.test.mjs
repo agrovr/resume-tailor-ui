@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = [
+  readFileSync("app/globals.css", "utf8"),
+  readFileSync("app/landing.css", "utf8"),
+].join("\n");
 
 test("shared brand mark has a crafted hover and glint treatment", () => {
   assert.match(globals, /\.brand::after\s*\{/);
@@ -19,6 +22,13 @@ test("resume preview artwork has paper texture and controlled motion", () => {
   assert.match(globals, /\.hero-stage:hover \.resume-card \.r-doc::after/);
   assert.match(globals, /@keyframes\s+rf-resume-paper-glint/);
   assert.doesNotMatch(globals, /\.hero-stage:not\(:hover\) \.resume-card-front\s*\{[\s\S]*?animation:/);
+});
+
+test("the landing technical CTA preview preserves the shared template padding", () => {
+  assert.match(
+    globals,
+    /:where\(\.landing-page\) \.cta-visual \.r-doc\.technical\s*\{[^}]*padding:\s*21px 23px;/s,
+  );
 });
 
 test("resume highlight motion is interaction-led and respects reduced-motion settings", () => {

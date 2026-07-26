@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { landingStylesForAssertions } from "./style_sources.mjs";
 
 const accordion = readFileSync("app/components/FaqAccordion.tsx", "utf8");
-const globals = readFileSync("app/globals.css", "utf8");
+const globals = landingStylesForAssertions;
 const smokeLayout = readFileSync("scripts/smoke_layout.mjs", "utf8");
 
 test("FAQ accordion exposes polished disclosure markup", () => {
