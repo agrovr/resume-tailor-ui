@@ -47,7 +47,7 @@ test("the root not-found fallback does not preload public-page route styles", ()
 });
 
 test("the universal stylesheet no longer carries complete page-owned rule sets", () => {
-  assert.ok(Buffer.byteLength(globalStyles) < 315_000, "universal stylesheet should stay below the route-split budget");
+  assert.ok(Buffer.byteLength(globalStyles) < 285_000, "universal stylesheet should stay below the route-split budget");
 
   const ownershipChecks = [
     [routeStyles.help, globalStyles, /\.help-action-grid\s*\{/],
@@ -98,12 +98,16 @@ test("the production smoke reads route styles from every page it validates", () 
   assert.match(smokeSource, /public pages did not include Next\.js stylesheets/);
 });
 
-test("studio route keeps mixed shared rules in their original cascade order", () => {
+test("studio route owns workbench and protected-surface rules", () => {
   assert.ok(Buffer.byteLength(routeStyles.studio) < 200_000, "studio route stylesheet should stay focused");
-  assert.match(globalStyles, /\.rf-intake-card,\s*\.rf-file-drop,\s*\.rf-target-editor/);
   assert.match(routeStyles.studio, /\.rf-intake-card,\s*\.rf-file-drop,\s*\.rf-target-editor/);
   assert.match(routeStyles.studio, /\/\* Studio workbench polish:/);
   assert.match(routeStyles.studio, /\/\* Studio preview finish:/);
+  assert.match(routeStyles.studio, /\/\* Protected Studio finish stays route-scoped/);
+  assert.match(routeStyles.studio, /@keyframes rf-status-flow/);
+  assert.doesNotMatch(globalStyles, /\.rf-intake-card,\s*\.rf-file-drop,\s*\.rf-target-editor/);
+  assert.doesNotMatch(globalStyles, /\/\* Studio workbench polish:/);
+  assert.doesNotMatch(globalStyles, /@keyframes rf-status-flow/);
 });
 
 test("route-owned support grids keep their narrow breakpoint after the split", () => {
@@ -116,9 +120,31 @@ test("route-owned support grids keep their narrow breakpoint after the split", (
 test("settings route keeps shared finish rules in their original cascade order", () => {
   assert.ok(Buffer.byteLength(routeStyles.settings) < 200_000, "settings route stylesheet should stay focused");
   assert.match(globalStyles, /\.settings-page-topbar\s*\{/);
+  assert.match(globalStyles, /\.settings-account-menu\s*\{/);
   assert.match(routeStyles.settings, /\.settings-page-topbar\s*\{/);
+  assert.match(routeStyles.settings, /#projects\.settings-section\s*\{/);
+  assert.doesNotMatch(globalStyles, /#projects\.settings-section\s*\{/);
   assert.match(
     routeStyles.settings,
     /\.settings-project-item,\s*\.settings-project-empty[\s\S]*?\.settings-project-item,\s*\.settings-document-item,\s*\.studio-account-recent-link/,
+  );
+});
+
+test("protected Studio and Settings finish stays out of the universal stylesheet", () => {
+  assert.match(
+    routeStyles.studio,
+    /\.rf-studio-hero,\s*\.rf-preflight-panel,\s*\.export-readiness-panel,\s*\.rf-recovery-card/,
+  );
+  assert.match(
+    routeStyles.settings,
+    /\.settings-account-overview,\s*\.settings-activity-panel,\s*\.settings-account-health,\s*\.settings-plan-access/,
+  );
+  assert.doesNotMatch(
+    globalStyles,
+    /\.rf-studio-hero,\s*\.rf-preflight-panel,\s*\.export-readiness-panel,\s*\.rf-recovery-card,\s*\.settings-account-overview/,
+  );
+  assert.doesNotMatch(
+    globalStyles,
+    /\.rf-preflight-item,\s*\.export-readiness-item,\s*\.settings-activity-item,\s*\.settings-account-health-card/,
   );
 });

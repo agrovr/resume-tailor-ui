@@ -5199,13 +5199,6 @@ html[data-theme="dark"] .result-box {
   gap: 16px;
 }
 
-.studio-hero-actions,
-.studio-card-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .export-readiness-panel {
   flex: 1 0 100%;
   display: grid;
@@ -5263,16 +5256,6 @@ html[data-theme="dark"] input::file-selector-button {
 .breadcrumb-current,
 .breadcrumb-separator {
   flex: 0 0 auto;
-}
-
-.breadcrumb-current,
-.breadcrumb-separator,
-.rf-studio-breadcrumb strong {
-  font-family: var(--font-display);
-  color: var(--ink-0);
-  font-size: clamp(1rem, 1.2vw, 1.25rem);
-  font-weight: 760;
-  line-height: 1;
 }
 
 .breadcrumb-current {
@@ -7037,21 +7020,6 @@ html[data-theme="dark"] input::file-selector-button {
   margin-bottom: 0;
 }
 
-/* Settings command rail: denser navigation with polished active states. */
-
-#projects.settings-section {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-#projects .settings-section-copy {
-  max-width: min(100%, 720px);
-}
-
-#projects .settings-section-panel {
-  inline-size: 100%;
-  max-inline-size: 100%;
-}
-
 .rf-recovery-card {
   display: grid;
   gap: 12px;
@@ -7064,21 +7032,6 @@ html[data-theme="dark"] input::file-selector-button {
   justify-content: space-between;
   gap: 14px;
   min-height: 44px;
-}
-
-.rf-field-head > div:not(.segment),
-.rf-company-field {
-  display: grid;
-  gap: 4px;
-}
-
-.rf-field-head span,
-.rf-company-field span {
-  color: var(--ink-3);
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
 }
 
 .rf-field-head strong {
@@ -7156,41 +7109,9 @@ html[data-theme="dark"] input::file-selector-button {
     var(--surface-2);
 }
 
-.suggestion-before,
-.suggestion-after {
-  min-width: 0;
-  padding: 11px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--ink-2);
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
 .suggestion-before {
   border-style: dashed;
   text-decoration: line-through;
-}
-
-html[data-theme="dark"] .rf-studio-topbar,
-html[data-theme="dark"] .rf-studio-rail,
-html[data-theme="dark"] .rf-studio-stat,
-html[data-theme="dark"] .rf-workflow-panel,
-html[data-theme="dark"] .studio-card,
-html[data-theme="dark"] .suggestion,
-html[data-theme="dark"] .studio-jd,
-html[data-theme="dark"] .ats-item,
-html[data-theme="dark"] .generated-card,
-html[data-theme="dark"] .studio-evidence-list span,
-html[data-theme="dark"] .generated-list li {
-  background: rgba(25, 31, 52, 0.9);
-  border-color: rgba(255, 247, 233, 0.14);
-}
-
-html[data-theme="dark"] .rf-readiness-track,
-html[data-theme="dark"] .rf-studio-stat-track {
-  background: rgba(255, 247, 233, 0.13);
 }
 
 html[data-theme="dark"] .rf-recovery-card {
@@ -7227,16 +7148,6 @@ html[data-theme="dark"] .suggestion.edit {
 
 @media (max-width: 720px) {
 
-  .studio-history-panel,
-  .studio-settings-panel {
-    scroll-margin-top: 24px;
-  }
-
-  .breadcrumb-current,
-  .breadcrumb-separator {
-    display: none;
-  }
-
   .studio-account-popover {
     right: auto;
     left: 0;
@@ -7257,12 +7168,6 @@ html[data-theme="dark"] .suggestion.edit {
   .landing-account-popover::before {
     right: 18px;
     left: auto;
-  }
-
-  .rf-studio-top-actions,
-  .rf-studio-hero,
-  .studio-card-head {
-    align-items: stretch;
   }
 
   .rf-studio-hero {
@@ -7291,11 +7196,6 @@ html[data-theme="dark"] .suggestion.edit {
     grid-template-columns: 1fr;
   }
 
-  .rf-resume-paper p,
-  .rf-resume-paper li,
-  .rf-resume-generated {
-    font-size: 0.92rem;
-  }
 }
 
 @media (max-width: 1180px) {
@@ -7995,22 +7895,6 @@ html[data-theme="dark"] .rf-file-icon {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-html[data-theme="dark"] .rf-target-editor,
-html[data-theme="dark"] .rf-run-controls,
-html[data-theme="dark"] .rf-file-drop,
-html[data-theme="dark"] .rf-preview-wrap,
-html[data-theme="dark"] .studio-jd,
-html[data-theme="dark"] .suggestion,
-html[data-theme="dark"] .ats-item,
-html[data-theme="dark"] .generated-card,
-html[data-theme="dark"] .studio-evidence-list span,
-html[data-theme="dark"] .generated-list li {
-  background:
-    linear-gradient(180deg, rgba(255, 247, 233, 0.045), rgba(255, 247, 233, 0.02)),
-    rgba(12, 17, 31, 0.78);
-  border-color: rgba(255, 247, 233, 0.18);
-}
-
 html[data-theme="dark"] .export-readiness-panel {
   border-color: rgba(222, 162, 79, 0.24);
   background:
@@ -8053,17 +7937,6 @@ html[data-theme="dark"] .r-doc {
   border-color: rgba(255, 247, 233, 0.2);
 }
 
-html[data-theme="dark"] .rf-resume-paper p,
-html[data-theme="dark"] .rf-resume-paper li,
-html[data-theme="dark"] .rf-resume-head p,
-html[data-theme="dark"] .rf-resume-head span,
-html[data-theme="dark"] .rf-resume-detail,
-html[data-theme="dark"] .rf-resume-role em,
-html[data-theme="dark"] .rf-resume-role span,
-html[data-theme="dark"] .rf-resume-generated {
-  color: #333;
-}
-
 /* Studio intake redesign: three focused cards that preserve the live workflow controls. */
 .sr-only {
   position: absolute;
@@ -8089,150 +7962,6 @@ html[data-theme="dark"] .rf-resume-generated {
     linear-gradient(135deg, color-mix(in srgb, var(--brand-soft) 40%, transparent), transparent 52%),
     color-mix(in srgb, var(--surface) 92%, var(--surface-2));
   box-shadow: var(--shadow-soft);
-}
-
-html[data-theme="dark"] .rf-preflight-panel,
-html[data-theme="dark"] .rf-preflight-item {
-  border-color: rgba(255, 247, 233, 0.16);
-  background:
-    linear-gradient(180deg, rgba(255, 247, 233, 0.05), rgba(255, 247, 233, 0.02)),
-    rgba(12, 17, 31, 0.78);
-}
-
-/* Studio workbench polish: tactile rails and glints for the signed-in workflow. */
-
-.rf-intake-card,
-.rf-file-drop,
-.rf-target-editor,
-.rf-run-controls,
-.rf-preview-wrap,
-.suggestion,
-.ats-item,
-.generated-card {
-  position: relative;
-  isolation: isolate;
-}
-
-.rf-intake-card::after,
-.suggestion::after,
-.ats-item::after,
-.generated-card::after {
-  position: absolute;
-  inset-block: 16px;
-  inset-inline-start: 0;
-  z-index: 1;
-  width: 3px;
-  border-radius: 999px;
-  background: var(--studio-workbench-rail);
-  content: "";
-  opacity: 0.58;
-  pointer-events: none;
-}
-
-.rf-file-drop::before,
-.rf-target-editor::before,
-.rf-run-controls::before,
-.rf-preview-wrap::before,
-.suggestion::before,
-.ats-item::before,
-.generated-card::before {
-  position: absolute;
-  inset-inline: 18px;
-  inset-block-start: 0;
-  z-index: 1;
-  height: 1px;
-  background: var(--studio-workbench-glint);
-  content: "";
-  opacity: 0.74;
-  pointer-events: none;
-}
-
-.rf-intake-card:hover::after,
-.rf-intake-card:focus-within::after,
-.suggestion:hover::after,
-.suggestion:focus-within::after,
-.ats-item:hover::after,
-.generated-card:hover::after,
-.generated-card:focus-within::after {
-  opacity: 0.92;
-}
-
-.suggestion,
-.ats-item,
-.generated-card {
-  background:
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-soft) 34%, transparent), transparent 10rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--surface) 94%, transparent), color-mix(in srgb, var(--surface-2) 86%, transparent)),
-    var(--surface-2);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 58%, transparent),
-    0 16px 34px -34px color-mix(in srgb, var(--ink-0) 48%, transparent);
-  transition:
-    border-color 170ms ease,
-    background 170ms ease,
-    box-shadow 170ms ease,
-    transform 170ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.suggestion:hover,
-.suggestion:focus-within,
-.ats-item:hover,
-.generated-card:hover,
-.generated-card:focus-within {
-  border-color: color-mix(in srgb, var(--brand) 34%, var(--line));
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #fff 72%, transparent),
-    0 24px 48px -38px color-mix(in srgb, var(--brand) 44%, var(--shadow));
-  transform: translateY(-2px);
-}
-
-.suggestion-after,
-.studio-evidence-list span,
-.generated-body,
-.empty-state,
-.warning-list span,
-.generated-action-note,
-.copy-state {
-  background-image:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface) 42%, transparent), transparent 64%),
-    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--brand-soft) 24%, transparent), transparent 10rem);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 52%, transparent);
-}
-
-html[data-theme="dark"] .suggestion,
-html[data-theme="dark"] .ats-item,
-html[data-theme="dark"] .generated-card {
-  background:
-    radial-gradient(circle at 100% 0%, rgba(222, 162, 79, 0.13), transparent 10rem),
-    linear-gradient(180deg, rgba(255, 247, 233, 0.056), rgba(255, 247, 233, 0.024)),
-    rgba(25, 31, 52, 0.9);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 247, 233, 0.07),
-    0 18px 38px -34px rgba(0, 0, 0, 0.88);
-}
-
-html[data-theme="dark"] .suggestion:hover,
-html[data-theme="dark"] .suggestion:focus-within,
-html[data-theme="dark"] .ats-item:hover,
-html[data-theme="dark"] .generated-card:hover,
-html[data-theme="dark"] .generated-card:focus-within {
-  border-color: rgba(222, 162, 79, 0.34);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 247, 233, 0.08),
-    0 26px 54px -40px rgba(0, 0, 0, 0.92);
-}
-
-html[data-theme="dark"] .suggestion-after,
-html[data-theme="dark"] .studio-evidence-list span,
-html[data-theme="dark"] .generated-body,
-html[data-theme="dark"] .empty-state,
-html[data-theme="dark"] .warning-list span,
-html[data-theme="dark"] .generated-action-note,
-html[data-theme="dark"] .copy-state {
-  background-image:
-    linear-gradient(180deg, rgba(255, 247, 233, 0.04), transparent 64%),
-    radial-gradient(circle at 100% 0%, rgba(222, 162, 79, 0.08), transparent 10rem);
-  box-shadow: inset 0 1px 0 rgba(255, 247, 233, 0.065);
 }
 
 .empty-state {
@@ -8269,40 +7998,6 @@ html[data-theme="dark"] .empty-state:focus-within {
   box-shadow:
     inset 0 1px 0 rgba(255, 247, 233, 0.075),
     0 24px 54px -40px rgba(0, 0, 0, 0.94);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rf-intake-card,
-  .rf-file-drop,
-  .rf-target-editor,
-  .rf-run-controls,
-  .rf-preview-wrap,
-  .suggestion,
-  .ats-item,
-  .generated-card,
-  .rf-intake-card::after,
-  .rf-file-drop::before,
-  .rf-target-editor::before,
-  .rf-run-controls::before,
-  .rf-preview-wrap::before,
-  .suggestion::before,
-  .suggestion::after,
-  .ats-item::before,
-  .ats-item::after,
-  .generated-card::before,
-  .generated-card::after {
-    transition: none;
-  }
-
-  .rf-intake-card:hover,
-  .rf-intake-card:focus-within,
-  .suggestion:hover,
-  .suggestion:focus-within,
-  .ats-item:hover,
-  .generated-card:hover,
-  .generated-card:focus-within {
-    transform: none;
-  }
 }
 
 /* Studio preview finish: review desk polish for tabs, status chips, and document paper. */
@@ -10548,155 +10243,7 @@ html[data-theme="dark"] .nav {
     display: none;
   }
 }
-
-/* Product surface polish: protected workspace, settings, and admin support. */
-.rf-studio-hero,
-.rf-preflight-panel,
-.export-readiness-panel,
-.rf-recovery-card,
-.settings-account-overview,
-.settings-activity-panel,
-.settings-account-health,
-.settings-plan-access,
-.settings-plan-active-card,
-.settings-plan-info-item,
-.settings-billing-timeline-item {
-  position: relative;
-  isolation: isolate;
-}
-
-.rf-studio-hero::after,
-.rf-preflight-panel::after,
-.export-readiness-panel::after,
-.settings-account-overview::after,
-.settings-activity-panel::after,
-.settings-account-health::after,
-.settings-plan-access::after {
-  position: absolute;
-  inset: 1px;
-  z-index: -1;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    linear-gradient(126deg, rgba(255, 255, 255, 0.3), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.16)),
-    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--accent-soft) 44%, transparent), transparent 14rem);
-  content: "";
-  opacity: 0.76;
-}
-
-.rf-preflight-panel,
-.export-readiness-panel,
-.rf-recovery-card,
-.settings-account-overview,
-.settings-activity-panel,
-.settings-account-health,
-.settings-plan-access,
-.settings-plan-active-card {
-  box-shadow:
-    0 24px 70px -54px var(--shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
-}
-
-.rf-preflight-item,
-.export-readiness-item,
-.settings-activity-item,
-.settings-account-health-card,
-.settings-plan-access-item,
-.settings-plan-info-item,
-.settings-billing-timeline-item {
-  position: relative;
-  overflow: hidden;
-}
-
-.rf-preflight-item::after,
-.export-readiness-item::after,
-.settings-activity-item::after,
-.settings-account-health-card::after,
-.settings-plan-access-item::after,
-.settings-plan-info-item::after,
-.settings-billing-timeline-item::after {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(110deg, transparent 0 28%, rgba(255, 255, 255, 0.46) 45%, transparent 62% 100%);
-  content: "";
-  opacity: 0;
-  transform: translateX(-55%);
-  transition: opacity 180ms ease, transform 520ms ease;
-}
-
-.rf-preflight-item:hover::after,
-.rf-preflight-item:focus-visible::after,
-.export-readiness-item:hover::after,
-.export-readiness-item:focus-visible::after,
-.settings-activity-item:hover::after,
-.settings-activity-item:focus-visible::after,
-.settings-account-health-card:hover::after,
-.settings-account-health-card:focus-visible::after,
-.settings-plan-access-item:hover::after,
-.settings-plan-info-item:hover::after,
-.settings-billing-timeline-item:hover::after {
-  opacity: 0.7;
-  transform: translateX(62%);
-}
-
-.rf-preflight-score,
-.settings-activity-action,
-.settings-account-health-action {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    0 12px 28px -24px var(--shadow);
-}
-
-/* Operational surface finish: saved work, document rows, and support triage. */
-
-.settings-project-item,
-.settings-document-item,
-.studio-account-recent-link {
-  background: color-mix(in srgb, var(--surface) 92%, var(--surface-warm));
-}
-
-html[data-theme="dark"] .rf-studio-hero::after,
-html[data-theme="dark"] .rf-preflight-panel::after,
-html[data-theme="dark"] .export-readiness-panel::after,
-html[data-theme="dark"] .settings-account-overview::after,
-html[data-theme="dark"] .settings-activity-panel::after,
-html[data-theme="dark"] .settings-account-health::after,
-html[data-theme="dark"] .settings-plan-access::after {
-  background:
-    linear-gradient(126deg, rgba(255, 247, 233, 0.08), transparent 30%, transparent 74%, rgba(245, 214, 154, 0.08)),
-    radial-gradient(circle at 92% 8%, rgba(222, 162, 79, 0.14), transparent 14rem);
-  opacity: 0.9;
-}
-
-html[data-theme="dark"] .rf-preflight-item::after,
-html[data-theme="dark"] .export-readiness-item::after,
-html[data-theme="dark"] .settings-activity-item::after,
-html[data-theme="dark"] .settings-account-health-card::after,
-html[data-theme="dark"] .settings-plan-access-item::after,
-html[data-theme="dark"] .settings-plan-info-item::after,
-html[data-theme="dark"] .settings-billing-timeline-item::after {
-  background: linear-gradient(110deg, transparent 0 30%, rgba(255, 247, 233, 0.12) 48%, transparent 66% 100%);
-}
-
-html[data-theme="dark"] .rf-preflight-panel,
-html[data-theme="dark"] .export-readiness-panel,
-html[data-theme="dark"] .rf-recovery-card,
-html[data-theme="dark"] .settings-account-overview,
-html[data-theme="dark"] .settings-activity-panel,
-html[data-theme="dark"] .settings-account-health,
-html[data-theme="dark"] .settings-plan-access,
-html[data-theme="dark"] .settings-plan-active-card {
-  box-shadow:
-    0 28px 76px -54px rgba(0, 0, 0, 0.96),
-    inset 0 1px 0 rgba(255, 247, 233, 0.08);
-}
-
-html[data-theme="dark"] .settings-project-item,
-html[data-theme="dark"] .settings-document-item,
-html[data-theme="dark"] .studio-account-recent-link {
-  background: color-mix(in srgb, var(--surface) 92%, var(--bg));
-}
+/* End final mobile landing guardrail. */
 
 /* Settings commerce finish: billing trust rails and export document clarity. */
 
@@ -10719,46 +10266,6 @@ html[data-theme="dark"] .studio-account-recent-link {
 
 html[data-theme="dark"] .primary-button.action-submit.is-pending:disabled {
   color: #f3d9ad;
-}
-
-@keyframes rf-status-flow {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rf-preflight-item::after,
-  .export-readiness-item::after,
-  .settings-activity-item::after,
-  .settings-account-health-card::after,
-  .settings-plan-access-item::after,
-  .settings-plan-info-item::after,
-  .settings-billing-timeline-item::after,
-  .rf-studio-stat-fill {
-    animation: none;
-    transition: none;
-  }
-
-  .settings-document-item,
-  .settings-project-item,
-  .studio-account-recent-link {
-    transition: none;
-  }
-
-  .settings-document-item:hover,
-  .settings-document-item:focus-within,
-  .settings-project-item:hover,
-  .settings-project-item:focus-within,
-  .studio-account-recent-link:hover,
-  .studio-account-recent-link:focus-visible {
-    transform: none;
-  }
 }
 
 /* Landing pricing refinement: compact plans with quiet depth and clear status. */

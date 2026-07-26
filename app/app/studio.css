@@ -6838,6 +6838,74 @@ body,
   }
 }
 
+/* Protected Studio finish stays route-scoped so public pages do not parse it. */
+.rf-studio-hero,
+.rf-preflight-panel,
+.export-readiness-panel,
+.rf-recovery-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.rf-studio-hero::after,
+.rf-preflight-panel::after,
+.export-readiness-panel::after {
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(126deg, rgba(255, 255, 255, 0.3), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.16)),
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--accent-soft) 44%, transparent), transparent 14rem);
+  content: "";
+  opacity: 0.76;
+}
+
+.rf-preflight-panel,
+.export-readiness-panel,
+.rf-recovery-card {
+  box-shadow:
+    0 24px 70px -54px var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.studio-account-recent-link {
+  background: color-mix(in srgb, var(--surface) 92%, var(--surface-warm));
+}
+
+html[data-theme="dark"] .rf-studio-hero::after,
+html[data-theme="dark"] .rf-preflight-panel::after,
+html[data-theme="dark"] .export-readiness-panel::after {
+  background:
+    linear-gradient(126deg, rgba(255, 247, 233, 0.08), transparent 30%, transparent 74%, rgba(245, 214, 154, 0.08)),
+    radial-gradient(circle at 92% 8%, rgba(222, 162, 79, 0.14), transparent 14rem);
+  opacity: 0.9;
+}
+
+html[data-theme="dark"] .rf-preflight-panel,
+html[data-theme="dark"] .export-readiness-panel,
+html[data-theme="dark"] .rf-recovery-card {
+  box-shadow:
+    0 28px 76px -54px rgba(0, 0, 0, 0.96),
+    inset 0 1px 0 rgba(255, 247, 233, 0.08);
+}
+
+html[data-theme="dark"] .studio-account-recent-link {
+  background: color-mix(in srgb, var(--surface) 92%, var(--bg));
+}
+
+@keyframes rf-status-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 .rf-preflight-item,
 .export-readiness-item,
 .settings-activity-item,

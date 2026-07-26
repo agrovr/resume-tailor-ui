@@ -5,7 +5,7 @@ import test from "node:test";
 const landingPage = readFileSync("app/page.tsx", "utf8");
 const stylesheet = readFileSync("app/globals.css", "utf8");
 const mobileGuardStart = stylesheet.indexOf("/* Final mobile landing guardrail:");
-const mobileGuardEnd = stylesheet.indexOf("/* Product surface polish:", mobileGuardStart);
+const mobileGuardEnd = stylesheet.indexOf("/* End final mobile landing guardrail. */", mobileGuardStart);
 assert.notEqual(mobileGuardStart, -1, "final mobile landing guardrail is missing");
 assert.notEqual(mobileGuardEnd, -1, "final mobile landing guardrail boundary is missing");
 const mobileGuard = stylesheet.slice(mobileGuardStart, mobileGuardEnd);

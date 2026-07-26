@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { allPublicStyles } from "./style_sources.mjs";
+import { allPublicStyles, allStudioStyles } from "./style_sources.mjs";
 
 const layout = readFileSync("app/layout.tsx", "utf8");
 const sitePolish = readFileSync("app/components/SitePolish.tsx", "utf8");
-const globals = `${allPublicStyles}\n${readFileSync("app/settings/settings.css", "utf8")}`;
+const settingsStyles = readFileSync("app/settings/settings.css", "utf8");
+const globals = `${allPublicStyles}\n${settingsStyles}`;
+const protectedStyles = `${settingsStyles}\n${allStudioStyles}`;
 const adminStyles = readFileSync("app/admin/support/admin-support.css", "utf8");
 
 test("site polish layer is mounted once in the app shell", () => {
@@ -73,14 +75,15 @@ test("product surface polish adds protected workspace details with reduced-motio
     ".export-readiness-item::after",
     ".rf-studio-stat-fill",
   ]) {
-    assert.match(globals, new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(protectedStyles, new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
   assert.doesNotMatch(adminStyles, /\.admin-support-card::before/);
   assert.doesNotMatch(adminStyles, /\.admin-support-card::after/);
   assert.match(adminStyles, /\.admin-support-action\.is-pending svg/);
-  assert.doesNotMatch(globals, /admin-support-/);
+  assert.doesNotMatch(protectedStyles, /admin-support-/);
 
-  assert.match(globals, /@keyframes\s+rf-status-flow/);
-  assert.match(globals, /prefers-reduced-motion:\s*reduce[\s\S]*rf-studio-stat-fill/);
+  assert.match(allStudioStyles, /@keyframes\s+rf-status-flow/);
+  assert.doesNotMatch(allPublicStyles, /@keyframes\s+rf-status-flow/);
+  assert.match(allStudioStyles, /prefers-reduced-motion:\s*reduce[\s\S]*rf-studio-stat-fill/);
 });
