@@ -66,5 +66,6 @@ test("rendered layout smoke exercises the interactive landing Studio sample", ()
   assert.match(smokeLayout, /studio-demo-history-state-mismatch/);
   assert.match(smokeLayout, /studio-demo-highlight-state-mismatch/);
   assert.match(smokeLayout, /studio-demo-reset-state-mismatch/);
+  assert.match(smokeLayout, /\{ selector: "\.dash-resume-thumb \.r-doc", minFill: 0\.78, maxFill: 0\.98 \}/);
   assert.match(smokeLayout, /pageChecks\.some\(\(pageCheck\) => pageCheck\.name === "landing"\)/);
 });

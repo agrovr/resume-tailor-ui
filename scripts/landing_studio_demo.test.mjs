@@ -40,6 +40,9 @@ test("landing studio interaction remains responsive dark-mode safe and restraine
   assert.match(globals, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.dash-demo-tabs\s*\{(?=[^}]*display:\s*grid)(?=[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\))[^}]*\}/s);
   assert.match(globals, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.dash-demo-reset\s*\{(?=[^}]*width:\s*44px)(?=[^}]*min-height:\s*44px)[^}]*\}/s);
   assert.match(globals, /\.dash-demo-content\s*\{(?=[^}]*min-height:\s*386px)[^}]*\}/s);
+  assert.match(globals, /\.dash-resume-thumb\s*\{(?=[^}]*position:\s*relative)(?=[^}]*display:\s*grid)(?=[^}]*place-items:\s*center)(?=[^}]*height:\s*280px)(?=[^}]*overflow:\s*hidden)[^}]*\}/s);
+  assert.match(globals, /\.dash-resume-thumb \.r-doc\s*\{(?=[^}]*position:\s*absolute)(?=[^}]*width:\s*340px)(?=[^}]*height:\s*auto)(?=[^}]*aspect-ratio:\s*8\.5\s*\/\s*11)(?=[^}]*transform:\s*scale\(0\.54\))(?=[^}]*transform-origin:\s*center)[^}]*\}/s);
+  assert.match(globals, /@container\s+dash-resume-card\s*\(max-width:\s*520px\)\s*\{[\s\S]*?\.dash-resume-thumb\s*\{(?=[^}]*height:\s*280px)(?=[^}]*border-right:\s*0)(?=[^}]*border-bottom:\s*1px solid var\(--line\))[^}]*\}/s);
   assert.match(globals, /\.dash-resume-thumb\[data-highlight="false"\] \.r-hl-good\s*\{(?=[^}]*background:\s*transparent)(?=[^}]*background-image:\s*none)[^}]*\}/s);
   assert.match(globals, /html\[data-theme="dark"\] \.dash-demo-tabs button\.active/);
   assert.match(globals, /html\[data-theme="dark"\] \.dash-demo \.dash-side-item\.active \.dash-pill\s*\{(?=[^}]*background:\s*color-mix\(in srgb, currentColor 10%, transparent\))(?=[^}]*color:\s*inherit)[^}]*\}/s);

@@ -41,6 +41,7 @@ const PAGE_CHECKS = [
       { container: "closest:.dash-stat", selector: ".dash-mock .dash-stat-label", tolerance: 4 },
       { container: "closest:.dash-stat", selector: ".dash-mock .dash-stat-value", tolerance: 4 },
       { container: "closest:.dash-stat", selector: ".dash-mock .dash-stat-delta", tolerance: 4 },
+      { container: ".dash-resume-thumb", selector: ".dash-resume-thumb .r-doc", tolerance: 2 },
       { container: "closest:.cta-visual", selector: ".cta-visual .resume-card", tolerance: 2 },
       { container: ".cta-band", selector: ".cta-visual .resume-card", tolerance: 8 },
       { container: ".cta-band", selector: ".cta-band > div:first-child", tolerance: 4 },
@@ -83,6 +84,9 @@ const PAGE_CHECKS = [
       ".cta-band h2",
       ".cta-band p",
       ".cta-band .btn",
+    ],
+    documentFillChecks: [
+      { selector: ".dash-resume-thumb .r-doc", minFill: 0.78, maxFill: 0.98 },
     ],
   },
   {
