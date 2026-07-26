@@ -12,6 +12,7 @@ import {
   parseCookieHeader,
   supabaseStorageKey,
   validateSignedInAuthStatusPayload,
+  withoutLandingScope,
 } from "./smoke_frontend.mjs";
 
 function buildSession(overrides = {}) {
@@ -31,6 +32,21 @@ function buildSession(overrides = {}) {
     ...overrides,
   };
 }
+
+test("normalizes landing-only scope before source-shape smoke assertions", () => {
+  const scopedStyles = [
+    ":where(.landing-page).page-shell{overflow-x:clip}",
+    ":where(.landing-page) .steps,:where(.landing-page) .features-grid{display:grid;min-width:0}",
+  ].join("\n");
+
+  assert.equal(
+    withoutLandingScope(scopedStyles),
+    [
+      ".page-shell{overflow-x:clip}",
+      ".steps,.features-grid{display:grid;min-width:0}",
+    ].join("\n"),
+  );
+});
 
 test("derives the Supabase SSR auth cookie storage key from the project URL", () => {
   assert.equal(

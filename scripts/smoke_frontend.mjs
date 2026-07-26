@@ -285,6 +285,12 @@ function requireCondition(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+export function withoutLandingScope(stylesheetText) {
+  return stylesheetText
+    .replaceAll(":where(.landing-page).page-shell", ".page-shell")
+    .replaceAll(":where(.landing-page) ", "");
+}
+
 export function hasCompactFinalCtaCluster(stylesheetText) {
   return /\.cta-band\s+\.cta-cluster\s*\{(?=[^}]*display:\s*grid)(?=[^}]*grid-template-columns:\s*minmax\(0,\s*1\.08fr\)\s+minmax\(0,\s*(?:0)?\.92fr\))(?=[^}]*inline-size:\s*min\(100%,\s*430px\))[^}]*\}/s.test(stylesheetText);
 }
@@ -437,7 +443,13 @@ async function checkPublicShell(baseUrl, signedInCookie = "") {
     stylesheetText += `\n${readFileSync(new URL("../app/app/studio.css", import.meta.url), "utf8")}`;
     stylesheetText += `\n${readFileSync(new URL("../app/settings/settings.css", import.meta.url), "utf8")}`;
   }
-  const sourceStylesheetText = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+  stylesheetText = withoutLandingScope(stylesheetText);
+  const sourceStylesheetText = withoutLandingScope(
+    [
+      readFileSync(new URL("../app/globals.css", import.meta.url), "utf8"),
+      readFileSync(new URL("../app/landing.css", import.meta.url), "utf8"),
+    ].join("\n"),
+  );
 
   requireCondition(/\.templates-page-hero\s*\{(?=[^}]*min-width:\s*0)(?=[^}]*container:\s*templates-hero\s*\/\s*inline-size)(?=[^}]*overflow:\s*hidden)[^}]*\}/s.test(stylesheetText), "templates hero was missing overflow-safe container sizing");
   requireCondition(/\.templates-page-hero\s*>\s*\*\s*\{(?=[^}]*min-width:\s*0)[^}]*\}/s.test(stylesheetText), "templates hero children can still force horizontal overflow");

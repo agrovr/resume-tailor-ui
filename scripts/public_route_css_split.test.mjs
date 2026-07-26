@@ -18,6 +18,10 @@ const routeStyles = {
   publicPages: readFileSync("app/public-pages.css", "utf8"),
 };
 
+function sourceByteLength(styles) {
+  return Buffer.byteLength(styles.replaceAll("\r\n", "\n"));
+}
+
 test("route styles load from their owning route instead of the root bundle", () => {
   const routeImports = [
     ["app/help/layout.tsx", /import "\.\/help\.css"/],
@@ -51,8 +55,8 @@ test("the root not-found fallback does not preload public-page route styles", ()
 });
 
 test("the universal stylesheet no longer carries complete page-owned rule sets", () => {
-  assert.ok(Buffer.byteLength(globalStyles) < 165_000, "universal stylesheet should stay below the route-split budget");
-  assert.ok(Buffer.byteLength(routeStyles.landing) < 160_000, "landing stylesheet should stay focused");
+  assert.ok(sourceByteLength(globalStyles) < 165_000, "universal stylesheet should stay below the route-split budget");
+  assert.ok(sourceByteLength(routeStyles.landing) < 160_000, "landing stylesheet should stay focused");
 
   const ownershipChecks = [
     [routeStyles.landing, globalStyles, /\/\* Landing pricing refinement:/],
@@ -117,6 +121,8 @@ test("the production smoke reads route styles from every page it validates", () 
   assert.match(smokeSource, /checkPublicShell\(baseUrl,\s*cookie\)/);
   assert.match(smokeSource, /new Set\(/);
   assert.match(smokeSource, /public pages did not include Next\.js stylesheets/);
+  assert.match(smokeSource, /readFileSync\(new URL\("\.\.\/app\/landing\.css"/);
+  assert.match(smokeSource, /stylesheetText = withoutLandingScope\(stylesheetText\)/);
 });
 
 test("studio route owns workbench and protected-surface rules", () => {
