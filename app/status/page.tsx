@@ -10,6 +10,7 @@ import { getStripeBillingConfig } from "../lib/billing/stripe";
 import { supportRequestHref } from "../lib/supportRequests";
 import { getSupabaseConfig } from "../lib/supabase/config";
 import { normalizeWorkflowCapabilities, type WorkflowCapabilities } from "../lib/workflowCapabilities";
+import { normalizeWorkflowReadiness } from "../lib/workflowReadiness";
 
 export const dynamic = "force-dynamic";
 
@@ -71,6 +72,29 @@ async function loadBackendCapabilities(): Promise<{ ok: boolean; capabilities: W
   }
 }
 
+async function loadBackendReadiness(): Promise<{ ok: boolean; error: string; latencyMs: number | null }> {
+  const baseUrl = backendBaseUrl();
+  if (!baseUrl) {
+    return { ok: false, error: "Resume workflow checks are not available for this deployment.", latencyMs: null };
+  }
+
+  const startedAt = Date.now();
+  try {
+    const response = await fetch(`${baseUrl}/ready`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(6000),
+    });
+    const latencyMs = Date.now() - startedAt;
+    const availability = normalizeWorkflowReadiness(await response.json());
+    if (!response.ok || availability !== "ready") {
+      return { ok: false, error: "Resume tailoring is temporarily unavailable.", latencyMs };
+    }
+    return { ok: true, error: "", latencyMs };
+  } catch {
+    return { ok: false, error: "Resume workflow checks did not respond before the status check timed out.", latencyMs: null };
+  }
+}
+
 function formatList(values: string[]) {
   if (!values.length) return "Unavailable";
   return values.join(" / ");
@@ -78,7 +102,10 @@ function formatList(values: string[]) {
 
 export default async function StatusPage() {
   const supabaseConfig = getSupabaseConfig();
-  const backend = await loadBackendCapabilities();
+  const [backend, workflow] = await Promise.all([
+    loadBackendCapabilities(),
+    loadBackendReadiness(),
+  ]);
   const checkedAt = new Date();
   const checkedAtLabel = new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
@@ -92,7 +119,6 @@ export default async function StatusPage() {
   const frontendUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "") || "https://roleforgeai.vercel.app";
   const backendUrl = backendBaseUrl();
 
-  const uploadFormats = backend.capabilities?.upload_formats.filter((format) => format.enabled).map((format) => format.label) ?? [];
   const freeExports = backend.capabilities?.export_formats.filter((format) => format.enabled && format.plan !== "premium").map((format) => format.label) ?? [];
   const premiumExports = backend.capabilities?.export_formats.filter((format) => format.enabled && format.plan === "premium").map((format) => format.label) ?? [];
   const templateCount = backend.capabilities?.export_templates.length ?? 0;
@@ -109,11 +135,11 @@ export default async function StatusPage() {
     },
     {
       title: "Resume workflow",
-      value: backend.ok ? "Operational" : "Check needed",
-      detail: backend.ok
-        ? `${formatList(uploadFormats)} uploads are advertised by the backend.`
-        : backend.error,
-      tone: backend.ok ? "good" : "warn",
+      value: workflow.ok ? "Operational" : "Check needed",
+      detail: workflow.ok
+        ? "Live tailoring readiness passed for this deployment."
+        : workflow.error,
+      tone: workflow.ok ? "good" : "warn",
       icon: "file",
     },
     {
@@ -176,7 +202,7 @@ export default async function StatusPage() {
   const incidentTitle = hasWarning ? "Some checks need attention" : "No active incident detected";
   const incidentDetail = hasWarning
     ? "At least one live readiness check is degraded. Use the action cards below to retry the workflow or contact support with this Status page context."
-    : "Account access, backend capabilities, exports, and billing readiness are reporting healthy from this deployment check.";
+    : "Account access, live workflow readiness, export capabilities, and billing readiness are reporting healthy from this deployment check.";
   const diagnostics: StatusDiagnostic[] = [
     {
       label: "Last checked",
@@ -192,11 +218,11 @@ export default async function StatusPage() {
     },
     {
       label: "Backend",
-      value: backend.ok && backend.latencyMs !== null ? `${backend.latencyMs} ms` : backendUrl ? "Check needed" : "Unavailable",
-      detail: backend.ok
-        ? `${backendUrl.replace(/^https?:\/\//, "")}/capabilities responded to this status render.`
-        : backend.error,
-      tone: backend.ok ? "good" : "warn",
+      value: workflow.ok && workflow.latencyMs !== null ? `${workflow.latencyMs} ms` : backendUrl ? "Check needed" : "Unavailable",
+      detail: workflow.ok
+        ? `${backendUrl.replace(/^https?:\/\//, "")}/ready responded to this status render.`
+        : workflow.error,
+      tone: workflow.ok ? "good" : "warn",
     },
     {
       label: "Account provider",
@@ -245,7 +271,7 @@ export default async function StatusPage() {
         <div className="legal-hero-card status-hero-card" aria-label="Status summary">
           <RoleForgeIcon name="check" size={18} />
           <span>Status uses current deployment configuration</span>
-          <span>Backend workflow status comes from advertised capabilities</span>
+          <span>Backend workflow status comes from live readiness</span>
           <span>Billing status reflects whether Stripe checkout is configured</span>
         </div>
       </section>

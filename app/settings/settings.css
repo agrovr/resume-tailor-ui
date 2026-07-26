@@ -6674,7 +6674,6 @@ html[data-theme="dark"] .settings-template-thumb {
   .rail-pill,
   .history-sync-badge,
   .export-format-chip,
-  .settings-hero-status,
   .login-status,
   .mock-status
 ) {
@@ -6694,7 +6693,6 @@ html[data-theme="dark"] .settings-template-thumb {
   .dash-pill,
   .rail-pill,
   .history-sync-badge,
-  .settings-hero-status,
   .login-status,
   .mock-status
 )::after {
@@ -6727,7 +6725,6 @@ html[data-theme="dark"] :where(
   .dash-pill,
   .rail-pill,
   .history-sync-badge,
-  .settings-hero-status,
   .login-status,
   .mock-status
 )::after {

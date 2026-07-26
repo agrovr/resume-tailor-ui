@@ -10,6 +10,8 @@ test("studio exposes a workflow preflight checklist from real state", () => {
   assert.match(studioPage, /preflightItems:\s*Array/);
   assert.match(studioPage, /label:\s*"Account"/);
   assert.match(studioPage, /value:\s*signedIn \? "Signed in" : "Needed"/);
+  assert.match(studioPage, /label:\s*"Workflow"/);
+  assert.match(studioPage, /value:\s*workflowAvailability === "ready"/);
   assert.match(studioPage, /label:\s*"Resume"/);
   assert.match(studioPage, /value:\s*previewUploadState === "reading" \? "Reading" : uploadFailed \? "Replace" : fileSelected \? "Ready" : "Needed"/);
   assert.match(studioPage, /label:\s*"Target"/);
@@ -20,14 +22,15 @@ test("studio exposes a workflow preflight checklist from real state", () => {
   assert.match(studioPage, /value:\s*selectedExportAllowed \? `\$\{selectedFormatLabel\} ready` : `\$\{selectedFormatLabel\} locked`/);
   assert.match(studioPage, /preflightReadyCount = preflightItems\.filter/);
   assert.match(studioPage, /preflightStatusLabel = canRun \? "Ready to tailor" : "Preflight needed"/);
-  assert.match(studioPage, /runNextAction = canRun/);
+  assert.match(studioPage, /runNextAction(?::\s*StudioNextAction \| null)? = canRun/);
   assert.match(studioPage, /label:\s*"Upload resume"/);
   assert.match(studioPage, /label:\s*"Add target"/);
   assert.match(studioPage, /label:\s*targetInput\.descriptionTooLong \? "Shorten target" : "Fix job URL"/);
   assert.match(studioPage, /label:\s*"Upload source"/);
   assert.match(studioPage, /label:\s*"Replace resume"/);
   assert.match(studioPage, /label:\s*"Review usage"/);
-  assert.match(studioPage, /label:\s*"Check status"/);
+  assert.match(studioPage, /label:\s*"Retry workflow check"/);
+  assert.match(studioPage, /label:\s*"Checking workflow"/);
   assert.match(studioPage, /className="studio-run-next-action"/);
   assert.match(studioPage, /className="studio-run-next-action compact"/);
   assert.match(studioPage, /className="studio-account-menu"\s+id="account"/);

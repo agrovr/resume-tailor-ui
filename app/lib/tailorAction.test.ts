@@ -15,7 +15,7 @@ const readyInput: TailorActionInput = {
   hasFile: true,
   hasTarget: true,
   targetInvalid: false,
-  backendReady: true,
+  workflowAvailability: "ready",
 };
 
 test("allows a complete signed-in workflow to run", () => {
@@ -91,9 +91,17 @@ test("prioritizes account, usage, and busy blockers", () => {
 });
 
 test("uses customer-facing copy when tailoring is temporarily unavailable", () => {
-  assert.deepEqual(tailorActionState({ ...readyInput, backendReady: false }), {
+  assert.deepEqual(tailorActionState({ ...readyInput, workflowAvailability: "unavailable" }), {
     canRun: false,
-    label: "Run Tailor",
-    disabledReason: "Resume tailoring is temporarily unavailable. Try again shortly.",
+    label: "Workflow unavailable",
+    disabledReason: "Resume tailoring is temporarily unavailable. You can still review saved work and existing exports.",
+  });
+});
+
+test("keeps the run action disabled while live readiness is being checked", () => {
+  assert.deepEqual(tailorActionState({ ...readyInput, workflowAvailability: "checking" }), {
+    canRun: false,
+    label: "Checking workflow...",
+    disabledReason: "Checking live workflow readiness before enabling Tailor.",
   });
 });

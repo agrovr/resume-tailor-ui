@@ -12,6 +12,9 @@ const DEFAULT_BASE_URL = "https://roleforgeai.vercel.app";
 const VIEWPORTS = [390, 640, 768, 900, 1024, 1180, 1366, 1440, 1500, 1712];
 const NARROW_DESKTOP_VIEWPORTS = [390, 430];
 const PUBLIC_THEMES = ["light", "dark"];
+const LEGAL_TOPBAR_PSEUDO_CHECKS = [
+  { selector: ".legal-topbar", pseudo: "::after", expectedContent: "none" },
+];
 const PAGE_CHECKS = [
   {
     path: "/",
@@ -159,6 +162,7 @@ const PAGE_CHECKS = [
   {
     path: "/help",
     name: "help",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [".legal-shell", ".legal-topbar", ".legal-hero", ".help-signal-strip", ".help-action-routes", ".help-quick-grid", ".legal-grid", ".legal-card", ".legal-footer-card"],
     textFitSelectors: [
       ".legal-hero h1",
@@ -206,6 +210,7 @@ const PAGE_CHECKS = [
   {
     path: "/support",
     name: "support",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [
       ".legal-shell",
       ".legal-topbar",
@@ -280,6 +285,7 @@ const PAGE_CHECKS = [
   {
     path: "/status",
     name: "status",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [".legal-shell", ".legal-topbar", ".legal-hero", ".status-grid", ".status-card", ".status-diagnostics", ".status-incident-card", ".status-diagnostic-card", ".legal-footer-card"],
     textFitSelectors: [
       ".legal-hero h1",
@@ -312,6 +318,7 @@ const PAGE_CHECKS = [
   {
     path: "/updates",
     name: "updates",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [".legal-shell", ".legal-topbar", ".legal-hero", ".updates-signal-grid", ".updates-signal-card", ".updates-ledger", ".updates-timeline", ".updates-card", ".legal-footer-card"],
     textFitSelectors: [
       ".legal-hero h1",
@@ -346,6 +353,7 @@ const PAGE_CHECKS = [
   {
     path: "/privacy",
     name: "privacy",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [".legal-shell", ".legal-topbar", ".legal-hero", ".legal-hero-meta", ".legal-index", ".legal-grid", ".legal-card", ".legal-footer-card"],
     textFitSelectors: [
       ".legal-hero h1",
@@ -373,6 +381,7 @@ const PAGE_CHECKS = [
   {
     path: "/terms",
     name: "terms",
+    pseudoContentChecks: LEGAL_TOPBAR_PSEUDO_CHECKS,
     selectors: [".legal-shell", ".legal-topbar", ".legal-hero", ".legal-hero-meta", ".legal-index", ".legal-grid", ".legal-card", ".legal-footer-card"],
     textFitSelectors: [
       ".legal-hero h1",
@@ -933,6 +942,7 @@ async function evaluateLayout(send, baseUrl, page, width, options = {}) {
     const anchorClearanceChecks = ${JSON.stringify(page.anchorClearanceChecks || [])};
     const maxHeightChecks = ${JSON.stringify(page.maxHeightChecks || [])};
     const documentFillChecks = ${JSON.stringify(page.documentFillChecks || [])};
+    const pseudoContentChecks = ${JSON.stringify(page.pseudoContentChecks || [])};
     const failures = [];
     const scrollStability = ${JSON.stringify(scrollStability)};
     const scrollStabilityCheck = ${JSON.stringify(page.scrollStabilityCheck || null)};
@@ -1024,6 +1034,25 @@ async function evaluateLayout(send, baseUrl, page, width, options = {}) {
           });
         }
       });
+    }
+
+    for (const rule of pseudoContentChecks) {
+      const element = document.querySelector(rule.selector);
+      if (!element) {
+        failures.push({ selector: rule.selector, reason: "pseudo-content-missing" });
+        continue;
+      }
+
+      const pseudo = rule.pseudo || "::after";
+      const content = window.getComputedStyle(element, pseudo).content;
+      if (content !== rule.expectedContent) {
+        failures.push({
+          selector: rule.selector + pseudo,
+          reason: "unexpected-pseudo-content",
+          content,
+          expectedContent: rule.expectedContent,
+        });
+      }
     }
 
     for (const element of document.querySelectorAll('[data-polish-reveal="true"]')) {

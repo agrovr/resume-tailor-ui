@@ -14,7 +14,7 @@ test("studio treats entitlement verification as a recoverable export outage", ()
 test("entitlement recovery retries export instead of rerunning tailoring", () => {
   assert.match(
     studioPage,
-    /onClick=\{workflowError\.code\s*===\s*"entitlement_verification_failed"\s*\?\s*\(\)\s*=>\s*void\s+onExportSelectedFormat\(\)\s*:\s*onRun\}/,
+    /onClick=\{[\s\S]*?workflowError\.code\s*===\s*"entitlement_verification_failed"\s*\?\s*\(\)\s*=>\s*void\s+onExportSelectedFormat\(\)\s*:\s*workflowError\.code\s*===\s*"ai_not_configured"\s*\?\s*\(\)\s*=>\s*void\s+checkWorkflowReadiness\(\)\s*:\s*onRun[\s\S]*?\}/,
   );
   assert.match(studioPage, /Retry \$\{selectedFormatLabel\} export/);
 });

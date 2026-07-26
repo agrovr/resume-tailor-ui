@@ -32,6 +32,10 @@ function customerWorkflowMessage(code: string | undefined, apiMessage: string | 
       return "Sign in again to continue your resume workflow.";
     case "auth_verification_failed":
       return "We could not verify your session. Refresh the page or sign in again, then retry.";
+    case "ai_not_configured":
+      return "Resume tailoring is temporarily unavailable. You can still review saved work and existing exports.";
+    case "ai_generation_failed":
+      return "Resume tailoring could not finish. Try again shortly.";
     case "export_forbidden":
       return "This export belongs to another signed-in account.";
     case "file_not_found":

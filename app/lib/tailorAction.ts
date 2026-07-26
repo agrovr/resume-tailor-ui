@@ -1,3 +1,5 @@
+import type { WorkflowAvailability } from "./workflowReadiness";
+
 export type TailorActionInput = {
   accountConfigured: boolean;
   signedIn: boolean;
@@ -10,7 +12,7 @@ export type TailorActionInput = {
   hasFile: boolean;
   hasTarget: boolean;
   targetInvalid: boolean;
-  backendReady: boolean;
+  workflowAvailability: WorkflowAvailability;
 };
 
 export type TailorActionState = {
@@ -21,7 +23,7 @@ export type TailorActionState = {
 
 export function tailorActionState(input: TailorActionInput): TailorActionState {
   const canRun = Boolean(
-    input.backendReady &&
+    input.workflowAvailability === "ready" &&
       input.hasFile &&
       input.hasTarget &&
       !input.targetInvalid &&
@@ -72,6 +74,24 @@ export function tailorActionState(input: TailorActionInput): TailorActionState {
     };
   }
 
+  if (input.workflowAvailability === "checking") {
+    return {
+      canRun,
+      label: "Checking workflow...",
+      disabledReason: canRun ? "" : "Checking live workflow readiness before enabling Tailor.",
+    };
+  }
+
+  if (input.workflowAvailability === "unavailable") {
+    return {
+      canRun,
+      label: "Workflow unavailable",
+      disabledReason: canRun
+        ? ""
+        : "Resume tailoring is temporarily unavailable. You can still review saved work and existing exports.",
+    };
+  }
+
   if (input.restoredWithoutFile) {
     return {
       canRun,
@@ -115,6 +135,6 @@ export function tailorActionState(input: TailorActionInput): TailorActionState {
   return {
     canRun,
     label: "Run Tailor",
-    disabledReason: canRun ? "" : input.backendReady ? "Complete the required fields before running Tailor." : "Resume tailoring is temporarily unavailable. Try again shortly.",
+    disabledReason: canRun ? "" : "Complete the required fields before running Tailor.",
   };
 }

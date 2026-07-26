@@ -24,8 +24,11 @@ test("status page uses live deployment readiness sources", () => {
   assert.match(statusPage, /billingReadiness\(getStripeBillingConfig\(\)/);
   assert.match(statusPage, /process\.env\.NEXT_PUBLIC_BACKEND_URL/);
   assert.match(statusPage, /fetch\(`\$\{baseUrl\}\/capabilities`/);
+  assert.match(statusPage, /fetch\(`\$\{baseUrl\}\/ready`/);
   assert.match(statusPage, /cache: "no-store"/);
   assert.match(statusPage, /normalizeWorkflowCapabilities/);
+  assert.match(statusPage, /normalizeWorkflowReadiness/);
+  assert.match(statusPage, /Promise\.all\(\[/);
   assert.match(statusPage, /latencyMs/);
   assert.match(statusPage, /Date\.now\(\) - startedAt/);
   assert.match(statusPage, /checkedAtLabel/);
@@ -54,7 +57,10 @@ test("status page covers account, workflow, export, and billing surfaces", () =>
   assert.match(statusPage, /status-incident-card/);
   assert.match(statusPage, /status-diagnostic-grid/);
   assert.match(statusPage, /NEXT_PUBLIC_SITE_URL/);
-  assert.match(statusPage, /backend\.latencyMs !== null \? `\$\{backend\.latencyMs\} ms`/);
+  assert.match(statusPage, /workflow\.latencyMs !== null \? `\$\{workflow\.latencyMs\} ms`/);
+  assert.match(statusPage, /title:\s*"Resume workflow"[\s\S]*?value:\s*workflow\.ok \? "Operational" : "Check needed"/);
+  assert.match(statusPage, /title:\s*"Exports"[\s\S]*?value:\s*backend\.ok \? "Available" : "Check needed"/);
+  assert.match(statusPage, /Backend workflow status comes from live readiness/);
   assert.match(statusPage, /supportRequestHref/);
   assert.match(statusPage, /subject:\s*"Status page workflow issue"/);
   assert.match(statusPage, /subject:\s*"Status page billing issue"/);
@@ -66,6 +72,7 @@ test("status page covers account, workflow, export, and billing surfaces", () =>
   assert.doesNotMatch(statusPage, /backend missing/i);
   assert.doesNotMatch(statusPage, /Supabase configuration missing/i);
   assert.doesNotMatch(statusPage, /STRIPE_SECRET_KEY/);
+  assert.doesNotMatch(statusPage, /GEMINI_API_KEY|GOOGLE_CLOUD_PROJECT/);
 });
 
 test("status page is discoverable from public and signed-in navigation", () => {

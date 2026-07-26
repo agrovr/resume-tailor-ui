@@ -43,6 +43,13 @@ test("rendered layout smoke rejects observer-polished sections that remain fully
   assert.match(smokeLayout, /reason:\s*"polish-reveal-hidden"/);
 });
 
+test("rendered layout smoke rejects generated overlays on legal topbars", () => {
+  assert.match(smokeLayout, /const LEGAL_TOPBAR_PSEUDO_CHECKS = \[/);
+  assert.match(smokeLayout, /selector:\s*"\.legal-topbar"[^\n]*pseudo:\s*"::after"[^\n]*expectedContent:\s*"none"/);
+  assert.match(smokeLayout, /window\.getComputedStyle\(element,\s*pseudo\)\.content/);
+  assert.match(smokeLayout, /reason:\s*"unexpected-pseudo-content"/);
+});
+
 test("rendered layout smoke catches clipped and visibly under-filled template papers", () => {
   assert.match(smokeLayout, /documentFillChecks/);
   assert.match(smokeLayout, /\.templates-hero-thumb \.r-doc[^\n]*minFill:\s*0\.72[^\n]*maxFill:\s*0\.95/);

@@ -73,6 +73,37 @@ test("maps auth and stale workflow failures without setup-shaped copy", async ()
   );
 });
 
+test("maps unavailable AI configuration without exposing backend setup details", async () => {
+  const response = await readApiError(new Response(JSON.stringify({
+    error: {
+      code: "ai_not_configured",
+      message: "GEMINI_API_KEY is not configured.",
+    },
+  }), { status: 503 }), "Fallback copy.");
+
+  const state = workflowErrorFromCaught(response, "Fallback copy.");
+  assert.equal(
+    state.message,
+    "Resume tailoring is temporarily unavailable. You can still review saved work and existing exports.",
+  );
+  assert.equal(state.code, "ai_not_configured");
+  assert.doesNotMatch(state.message, /GEMINI|API_KEY|configuration/i);
+});
+
+test("maps AI generation failures without exposing provider details", async () => {
+  const response = await readApiError(new Response(JSON.stringify({
+    error: {
+      code: "ai_generation_failed",
+      message: "AI generation failed after retry: upstream SDK detail",
+    },
+  }), { status: 502 }), "Fallback copy.");
+
+  const state = workflowErrorFromCaught(response, "Fallback copy.");
+  assert.equal(state.message, "Resume tailoring could not finish. Try again shortly.");
+  assert.equal(state.code, "ai_generation_failed");
+  assert.doesNotMatch(state.message, /SDK|upstream|retry:/i);
+});
+
 test("maps job URL and export ownership failures to recovery copy", async () => {
   const jobUrl = await readApiError(new Response(JSON.stringify({
     error: {

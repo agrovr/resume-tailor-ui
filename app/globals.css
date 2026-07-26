@@ -6806,13 +6806,7 @@ html[data-theme="dark"] input::file-selector-button {
 }
 
 .public-page-topbar::after {
-  position: absolute;
-  inset: 12px clamp(136px, 18vw, 240px) 12px clamp(168px, 24vw, 340px);
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--line-2) 58%, transparent), transparent);
-  content: "";
-  opacity: 0.7;
-  pointer-events: none;
+  content: none;
 }
 
 .public-page-topbar .brand,
@@ -8165,9 +8159,7 @@ html[data-theme="dark"] .public-page-topbar::before {
 }
 
 html[data-theme="dark"] .public-page-topbar::after {
-  content: "";
-  background: linear-gradient(90deg, transparent, rgba(255, 247, 233, 0.14), transparent);
-  opacity: 0.74;
+  content: none;
 }
 
 html[data-theme="dark"] .public-page-topbar .brand,
@@ -8220,13 +8212,7 @@ html[data-theme="dark"] .public-page-topbar .settings-page-actions {
 
 .legal-topbar::after,
 .public-page-topbar::after {
-  inset: 11px;
-  z-index: 0;
-  border: 1px solid color-mix(in srgb, white 42%, transparent);
-  border-radius: 999px;
-  background: transparent;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 42%, transparent);
-  opacity: 0.58;
+  content: none;
 }
 
 .legal-topbar .brand,
@@ -8287,9 +8273,7 @@ html[data-theme="dark"] .public-page-topbar::before {
 
 html[data-theme="dark"] .legal-topbar::after,
 html[data-theme="dark"] .public-page-topbar::after {
-  border-color: rgba(255, 247, 233, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 247, 233, 0.06);
-  opacity: 0.74;
+  content: none;
 }
 
 html[data-theme="dark"] .legal-topbar .settings-page-actions,
@@ -9796,10 +9780,6 @@ html[data-theme="dark"] .nav {
     width: 100%;
     padding: 8px;
     border-radius: 26px;
-  }
-
-  .public-page-topbar::after {
-    inset-inline: 18px;
   }
 
   .public-page-topbar .brand {
@@ -12518,7 +12498,6 @@ kbd {
   .rail-pill,
   .history-sync-badge,
   .export-format-chip,
-  .settings-hero-status,
   .login-status,
   .mock-status
 ) {
@@ -12538,7 +12517,6 @@ kbd {
   .dash-pill,
   .rail-pill,
   .history-sync-badge,
-  .settings-hero-status,
   .login-status,
   .mock-status
 )::after {
@@ -12613,7 +12591,6 @@ html[data-theme="dark"] :where(
   .dash-pill,
   .rail-pill,
   .history-sync-badge,
-  .settings-hero-status,
   .login-status,
   .mock-status
 )::after {

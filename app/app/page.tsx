@@ -97,6 +97,10 @@ import {
   type WorkflowCapabilities,
 } from "../lib/workflowCapabilities";
 import { readApiError, workflowErrorFromCaught, type WorkflowErrorState } from "../lib/workflowErrors";
+import {
+  normalizeWorkflowReadiness,
+  type WorkflowAvailability,
+} from "../lib/workflowReadiness";
 
 type AtsIssue = { severity: string; issue: string; fix: string };
 type AtsReport = { issues: AtsIssue[] };
@@ -109,6 +113,13 @@ type FitScore = {
   coverage_ratio?: number;
   heading_bonus?: number;
   note?: string;
+};
+
+type StudioNextAction = {
+  label: string;
+  href: string;
+  detail: string;
+  recheckWorkflow?: boolean;
 };
 
 type TailoringMode = "conservative" | "balanced" | "aggressive";
@@ -1015,6 +1026,9 @@ export default function Page() {
   const [confirmingClearHistory, setConfirmingClearHistory] = useState(false);
   const [confirmingDeleteProjectId, setConfirmingDeleteProjectId] = useState<string | null>(null);
   const [capabilities, setCapabilities] = useState<WorkflowCapabilities | null>(null);
+  const [workflowAvailability, setWorkflowAvailability] = useState<WorkflowAvailability>(
+    baseUrl ? "checking" : "unavailable",
+  );
   const uploadFormats = useMemo(
     () => capabilities?.upload_formats?.length ? capabilities.upload_formats : DEFAULT_UPLOAD_FORMATS,
     [capabilities],
@@ -1037,6 +1051,8 @@ export default function Page() {
   const workflowAccessTokenRef = useRef<WorkflowAccessToken | null>(null);
   const workflowTokenRequestRef = useRef<Promise<WorkflowAccessToken> | null>(null);
   const workflowTokenGenerationRef = useRef(0);
+  const workflowReadinessControllerRef = useRef<AbortController | null>(null);
+  const workflowReadinessGenerationRef = useRef(0);
 
   const accountUser = accountStatus?.user ?? null;
   const accountReady = Boolean(accountStatus?.configured && accountStatus.enabled);
@@ -1543,6 +1559,59 @@ export default function Page() {
     return () => controller.abort();
   }, [baseUrl]);
 
+  const checkWorkflowReadiness = useCallback(async () => {
+    workflowReadinessControllerRef.current?.abort();
+    const generation = workflowReadinessGenerationRef.current + 1;
+    workflowReadinessGenerationRef.current = generation;
+
+    if (!baseUrl) {
+      setWorkflowAvailability("unavailable");
+      return "unavailable" as const;
+    }
+
+    const controller = new AbortController();
+    workflowReadinessControllerRef.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), 6000);
+    setWorkflowAvailability("checking");
+
+    try {
+      const response = await fetch(`${baseUrl}/ready`, {
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      const availability = response.ok
+        ? normalizeWorkflowReadiness(await response.json())
+        : "unavailable";
+      if (workflowReadinessGenerationRef.current === generation) {
+        setWorkflowAvailability(availability);
+      }
+      return availability;
+    } catch {
+      if (workflowReadinessGenerationRef.current === generation) {
+        setWorkflowAvailability("unavailable");
+      }
+      return "unavailable" as const;
+    } finally {
+      window.clearTimeout(timeout);
+      if (workflowReadinessControllerRef.current === controller) {
+        workflowReadinessControllerRef.current = null;
+      }
+    }
+  }, [baseUrl]);
+
+  useEffect(() => {
+    void checkWorkflowReadiness();
+    const handleOnline = () => void checkWorkflowReadiness();
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      workflowReadinessGenerationRef.current += 1;
+      workflowReadinessControllerRef.current?.abort();
+      workflowReadinessControllerRef.current = null;
+    };
+  }, [checkWorkflowReadiness]);
+
   useEffect(() => {
     const currentFileKey = fileUploadKey(file);
 
@@ -1686,7 +1755,7 @@ export default function Page() {
   const targetInvalid = targetInput.invalid;
   const activeTargetValue = targetInput.activeValue;
   const uploadFailed = previewUploadState === "error";
-  const readyItems = [Boolean(baseUrl), Boolean(file && !uploadFailed), hasTarget && !targetInvalid];
+  const readyItems = [workflowAvailability === "ready", Boolean(file && !uploadFailed), hasTarget && !targetInvalid];
   const readiness = Math.round((readyItems.filter(Boolean).length / readyItems.length) * 100);
   const tailorAction = tailorActionState({
     accountConfigured: Boolean(accountStatus?.configured),
@@ -1700,7 +1769,7 @@ export default function Page() {
     hasFile: Boolean(file),
     hasTarget,
     targetInvalid,
-    backendReady: Boolean(baseUrl),
+    workflowAvailability,
   });
   const canRun = tailorAction.canRun;
 
@@ -2386,6 +2455,9 @@ export default function Page() {
       const nextError = workflowErrorFromCaught(caught, "The workflow stopped before finishing. Try again in a moment.");
       setWorkflowError(nextError);
       setError(nextError.message);
+      if (nextError.code === "ai_not_configured") {
+        setWorkflowAvailability("unavailable");
+      }
       if (nextError.code === "plan_limit_reached") {
         const monthlyRuns = numberDetail(nextError.details, "monthly_runs");
         const monthlyRunLimit = numberDetail(nextError.details, "monthly_limit");
@@ -2628,6 +2700,8 @@ export default function Page() {
       ? `${premiumExportFormat} export needs Premium access`
       : workflowError?.code === "entitlement_verification_failed"
         ? "Premium access could not be verified"
+      : workflowError?.code === "ai_not_configured"
+        ? "Tailoring service is temporarily unavailable"
       : workflowError?.code === "plan_limit_reached"
         ? "Monthly run limit reached"
         : workflowError?.requestId
@@ -2638,6 +2712,8 @@ export default function Page() {
       ? "Switch to PDF, refresh Billing, or contact support if Premium access should already be active."
       : workflowError?.code === "entitlement_verification_failed"
         ? "Your plan and tailored draft are unchanged. Wait a moment, then retry this export."
+      : workflowError?.code === "ai_not_configured"
+        ? "Check live readiness again before retrying. Saved work and existing exports remain available."
       : workflowError?.code === "plan_limit_reached"
         ? resetLabel
           ? `Free runs reset ${resetLabel}. Upgrade or wait for the next monthly reset.`
@@ -2646,7 +2722,13 @@ export default function Page() {
           ? "Use the request reference below if you contact support. It helps trace the exact workflow attempt."
           : "Retry the workflow after checking status. If it repeats, send a support request from this account.";
   const workflowRecoverySteps = workflowError
-    ? [
+    ? workflowError.code === "ai_not_configured"
+      ? [
+          "Keep the current resume and target in place.",
+          "Run the live workflow check again.",
+          "Check Status or contact support if availability stays degraded.",
+        ]
+      : [
         workflowError.requestId ? `Copy request ${workflowError.requestId} into a support note.` : "Keep the current resume and target in place.",
         workflowError.code === "premium_required"
           ? "Use PDF or refresh Billing before trying the premium export again."
@@ -2793,6 +2875,25 @@ export default function Page() {
       tone: signedIn ? "good" : "warn",
     },
     {
+      icon: workflowAvailability === "ready" ? "check" : "settings",
+      label: "Workflow",
+      value: workflowAvailability === "ready"
+        ? "Available"
+        : workflowAvailability === "checking"
+          ? "Checking"
+          : "Unavailable",
+      detail: workflowAvailability === "ready"
+        ? "The live tailoring service passed its readiness check."
+        : workflowAvailability === "checking"
+          ? "Checking live tailoring availability."
+          : "Tailoring is temporarily unavailable; saved work and existing exports remain available.",
+      tone: workflowAvailability === "ready"
+        ? "good"
+        : workflowAvailability === "checking"
+          ? "ready"
+          : "warn",
+    },
+    {
       icon: "file",
       label: "Resume",
       value: previewUploadState === "reading" ? "Reading" : uploadFailed ? "Replace" : fileSelected ? "Ready" : "Needed",
@@ -2838,9 +2939,9 @@ export default function Page() {
   const preflightReadyCount = preflightItems.filter((item) => item.tone === "good").length;
   const preflightStatusLabel = canRun ? "Ready to tailor" : "Preflight needed";
   const preflightStatusDetail = canRun
-    ? "Resume, target, account, usage, and export settings are ready."
+    ? "Workflow, resume, target, account, usage, and export settings are ready."
     : runDisabledReason || "Complete the required fields before running Tailor.";
-  const runNextAction = canRun
+  const runNextAction: StudioNextAction | null = canRun
     ? null
     : !signedIn && accountStatus?.configured
       ? { label: "Sign in", href: "/login?next=/app", detail: "Account sign-in is required before running Tailor." }
@@ -2850,21 +2951,28 @@ export default function Page() {
           ? { label: "View resume", href: "#input", detail: "Resume reading is still in progress." }
           : uploadFailed
             ? { label: "Replace resume", href: "#input", detail: previewUploadError || "Choose another resume file before running Tailor." }
-            : result && !file
-              ? { label: "Upload source", href: "#input", detail: "Restored runs need the source file before re-tailoring." }
-              : !fileSelected
-                ? { label: "Upload resume", href: "#input", detail: "Start by adding the resume file you want to tailor." }
-                : targetInvalid
-                  ? {
-                      label: targetInput.descriptionTooLong ? "Shorten target" : "Fix job URL",
-                      href: "#target",
-                      detail: targetInput.disabledReason,
-                    }
-                  : !hasTarget
-                    ? { label: "Add target", href: "#target", detail: "Add a job description or public posting URL next." }
-                    : !baseUrl
-                      ? { label: "Check status", href: "/status", detail: "Resume tailoring is unavailable right now." }
-                      : { label: "Review preflight", href: "#preflight", detail: preflightStatusDetail };
+            : workflowAvailability === "checking"
+              ? { label: "Checking workflow", href: "#preflight", detail: runDisabledReason }
+              : workflowAvailability === "unavailable"
+                ? {
+                    label: "Retry workflow check",
+                    href: "#preflight",
+                    detail: "Check live availability again without losing this workspace.",
+                    recheckWorkflow: true,
+                  }
+                : result && !file
+                  ? { label: "Upload source", href: "#input", detail: "Restored runs need the source file before re-tailoring." }
+                  : !fileSelected
+                    ? { label: "Upload resume", href: "#input", detail: "Start by adding the resume file you want to tailor." }
+                    : targetInvalid
+                      ? {
+                          label: targetInput.descriptionTooLong ? "Shorten target" : "Fix job URL",
+                          href: "#target",
+                          detail: targetInput.disabledReason,
+                        }
+                      : !hasTarget
+                        ? { label: "Add target", href: "#target", detail: "Add a job description or public posting URL next." }
+                        : { label: "Review preflight", href: "#preflight", detail: preflightStatusDetail };
   const coverLetterWordCount = countReadableWords(coverLetterText);
   const interviewQuestionCount = interviewPrep.length;
   const hasGeneratedAssets = Boolean(coverLetterText || interviewQuestionCount);
@@ -3677,7 +3785,11 @@ export default function Page() {
                   </button>
                 ) : null}
                 {runNextAction ? (
-                  <Link className="studio-run-next-action" href={runNextAction.href}>
+                  <Link
+                    className="studio-run-next-action"
+                    href={runNextAction.href}
+                    onClick={runNextAction.recheckWorkflow ? () => void checkWorkflowReadiness() : undefined}
+                  >
                     <RoleForgeIcon name="arrow" size={13} />
                     <span>
                       <strong>{runNextAction.label}</strong>
@@ -4157,7 +4269,11 @@ export default function Page() {
                       <span className="sr-only" aria-live="polite">Workflow status: {stage}</span>
                       <button className="primary-button" type="button" onClick={onRun} disabled={!canRun} title={runDisabledReason || undefined}>{runLabel} <RoleForgeIcon name="sparkle" size={14} /></button>
                       {runNextAction ? (
-                        <Link className="studio-run-next-action compact" href={runNextAction.href}>
+                        <Link
+                          className="studio-run-next-action compact"
+                          href={runNextAction.href}
+                          onClick={runNextAction.recheckWorkflow ? () => void checkWorkflowReadiness() : undefined}
+                        >
                           <RoleForgeIcon name="arrow" size={13} />
                           <span>
                             <strong>{runNextAction.label}</strong>
@@ -4288,10 +4404,29 @@ export default function Page() {
                       <button
                         className="primary-button"
                         type="button"
-                        onClick={workflowError.code === "entitlement_verification_failed" ? () => void onExportSelectedFormat() : onRun}
-                        disabled={workflowError.code === "entitlement_verification_failed" ? !result?.tailored_text?.trim() || busy : !canRun || busy}
+                        onClick={
+                          workflowError.code === "entitlement_verification_failed"
+                            ? () => void onExportSelectedFormat()
+                            : workflowError.code === "ai_not_configured"
+                              ? () => void checkWorkflowReadiness()
+                              : onRun
+                        }
+                        disabled={
+                          workflowError.code === "entitlement_verification_failed"
+                            ? !result?.tailored_text?.trim() || busy
+                            : workflowError.code === "ai_not_configured"
+                              ? workflowAvailability === "checking" || busy
+                              : !canRun || busy
+                        }
                       >
-                        {workflowError.code === "entitlement_verification_failed" ? `Retry ${selectedFormatLabel} export` : "Retry workflow"} <RoleForgeIcon name="arrow" size={14} />
+                        {workflowError.code === "entitlement_verification_failed"
+                          ? `Retry ${selectedFormatLabel} export`
+                          : workflowError.code === "ai_not_configured"
+                            ? workflowAvailability === "checking"
+                              ? "Checking workflow..."
+                              : "Check workflow"
+                            : "Retry workflow"}{" "}
+                        <RoleForgeIcon name="arrow" size={14} />
                       </button>
                       <Link className="ghost-button" href="/status">Check status</Link>
                       <Link className="ghost-button" href="/help#try-first">Help guide</Link>
