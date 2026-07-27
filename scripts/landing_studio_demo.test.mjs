@@ -21,13 +21,16 @@ test("landing studio is isolated as an honest client-side sample", () => {
 test("landing studio defers its client bundle until the section approaches", () => {
   assert.match(deferredDemo, /^"use client";/);
   assert.match(deferredDemo, /dynamic\([\s\S]*?import\("\.\/LandingStudioDemo"\)[\s\S]*?ssr:\s*false/);
-  assert.match(deferredDemo, /new IntersectionObserver\([\s\S]*?rootMargin:\s*"600px 0px"/);
+  assert.match(deferredDemo, /new IntersectionObserver\([\s\S]*?window\.matchMedia\("\(max-width: 640px\)"\)\.matches[\s\S]*?\? "1300px 0px"[\s\S]*?: "600px 0px"/);
+  assert.match(deferredDemo, /const observerTarget = root\.closest\("#studio"\) \?\? root/);
+  assert.match(deferredDemo, /observer\.observe\(observerTarget\)/);
   assert.match(deferredDemo, /window\.location\.hash === "#studio"/);
   assert.match(deferredDemo, /window\.addEventListener\("hashchange", handleHashChange\)/);
   assert.match(deferredDemo, /className="dash-demo-placeholder-body" role="status"/);
   assert.match(deferredDemo, /Preparing the interactive workspace/);
   assert.match(globals, /\.dash-demo-placeholder-body\s*\{(?=[^}]*min-height:\s*720px)(?=[^}]*place-items:\s*center)[^}]*\}/s);
   assert.match(globals, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.dash-demo-placeholder-body\s*\{[^}]*min-height:\s*clamp\(1360px, calc\(1565px - 32vw\), 1465px\)[^}]*\}/s);
+  assert.match(globals, /\.page-shell > section:not\(\.hero\)\s*\{(?=[^}]*content-visibility:\s*auto)[^}]*\}/s);
 });
 
 test("landing studio exposes keyboard-operable sample views and state", () => {

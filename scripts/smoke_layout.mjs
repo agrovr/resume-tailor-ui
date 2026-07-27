@@ -1434,12 +1434,13 @@ async function evaluatePreviewTabs(send, baseUrl) {
   return [JSON.parse(result.result.result.value)];
 }
 
-async function evaluateLandingStudioDemo(send, baseUrl) {
+async function evaluateLandingStudioDemo(send, baseUrl, width = 1280) {
+  const mobile = width <= 640;
   await send("Emulation.setDeviceMetricsOverride", {
-    width: 1280,
-    height: 1000,
+    width,
+    height: mobile ? 844 : 1000,
     deviceScaleFactor: 1,
-    mobile: false,
+    mobile,
   });
   await send("Page.navigate", { url: `${baseUrl}/` });
   await delay(2400);
@@ -1447,7 +1448,51 @@ async function evaluateLandingStudioDemo(send, baseUrl) {
   const expression = `(async () => {
     const failures = [];
     const waitForUpdate = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    document.querySelector("#studio")?.scrollIntoView({ block: "start" });
+    const studio = document.querySelector("#studio");
+    const initialDemo = document.querySelector(".dash-demo");
+    const initialDistance = studio
+      ? studio.getBoundingClientRect().top - window.innerHeight
+      : null;
+
+    if (!studio) {
+      failures.push({ selector: "#studio", reason: "studio-section-missing" });
+    } else if (initialDemo && initialDistance > 650) {
+      failures.push({
+        selector: ".dash-demo",
+        reason: "studio-demo-loaded-too-early",
+        initialDistance,
+      });
+    }
+
+    if (studio && !initialDemo) {
+      const preloadDistance = 450;
+      window.scrollBy({
+        top: Math.max(0, initialDistance - preloadDistance),
+        behavior: "instant",
+      });
+
+      const preloadDeadline = performance.now() + 8000;
+      while (!document.querySelector(".dash-demo") && performance.now() < preloadDeadline) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+
+      const distanceAfterPreload = studio.getBoundingClientRect().top - window.innerHeight;
+      if (!document.querySelector(".dash-demo")) {
+        failures.push({
+          selector: ".dash-demo",
+          reason: "studio-demo-not-preloaded",
+          distanceAfterPreload,
+        });
+      } else if (distanceAfterPreload < -1) {
+        failures.push({
+          selector: ".dash-demo",
+          reason: "studio-demo-loaded-after-entry",
+          distanceAfterPreload,
+        });
+      }
+    }
+
+    studio?.scrollIntoView({ block: "start" });
 
     const demoDeadline = performance.now() + 8000;
     let demo = document.querySelector(".dash-demo");
@@ -2057,7 +2102,10 @@ async function main(argv = process.argv.slice(2)) {
       if (signedInSession?.cookie) await ensureSignedInBrowserSession();
       const interactionReports = [
         ...(pageChecks.some((pageCheck) => pageCheck.name === "landing")
-          ? await evaluateLandingStudioDemo(page.send, baseUrl)
+          ? [
+              ...(await evaluateLandingStudioDemo(page.send, baseUrl, 1280)),
+              ...(await evaluateLandingStudioDemo(page.send, baseUrl, 390)),
+            ]
           : []),
         ...(pageChecks.some((pageCheck) => pageCheck.name === "templates")
           ? await evaluateTemplateFilters(page.send, baseUrl)

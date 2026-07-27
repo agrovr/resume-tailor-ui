@@ -57,6 +57,7 @@ export function DeferredLandingStudioDemo({
       revealDemo();
       return;
     }
+    const observerTarget = root.closest("#studio") ?? root;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -65,7 +66,11 @@ export function DeferredLandingStudioDemo({
           observer.disconnect();
         }
       },
-      { rootMargin: "600px 0px" },
+      {
+        rootMargin: window.matchMedia("(max-width: 640px)").matches
+          ? "1300px 0px"
+          : "600px 0px",
+      },
     );
 
     const handleHashChange = () => {
@@ -74,7 +79,7 @@ export function DeferredLandingStudioDemo({
       }
     };
 
-    observer.observe(root);
+    observer.observe(observerTarget);
     window.addEventListener("hashchange", handleHashChange);
 
     return () => {

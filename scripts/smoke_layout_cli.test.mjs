@@ -67,7 +67,12 @@ test("rendered layout smoke exercises template filters and their accessible stat
 });
 
 test("rendered layout smoke exercises the interactive landing Studio sample", () => {
-  assert.match(smokeLayout, /async function evaluateLandingStudioDemo\(send, baseUrl\)/);
+  assert.match(smokeLayout, /async function evaluateLandingStudioDemo\(send, baseUrl, width = 1280\)/);
+  assert.match(smokeLayout, /const preloadDistance = 450/);
+  assert.match(smokeLayout, /reason: "studio-demo-not-preloaded"/);
+  assert.match(smokeLayout, /reason: "studio-demo-loaded-after-entry"/);
+  assert.match(smokeLayout, /evaluateLandingStudioDemo\(page\.send, baseUrl, 1280\)/);
+  assert.match(smokeLayout, /evaluateLandingStudioDemo\(page\.send, baseUrl, 390\)/);
   assert.match(smokeLayout, /selector === "#studio"[\s\S]*?studioDemoDeadline[\s\S]*?document\.querySelector\("\.dash-demo"\)/);
   assert.match(smokeLayout, /studio-demo-view-mismatch/);
   assert.match(smokeLayout, /studio-demo-suggestion-state-mismatch/);
