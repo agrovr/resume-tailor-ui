@@ -20,10 +20,10 @@ test("landing footer keeps factual product links and legal metadata", () => {
   assert.match(landingPage, /&copy; \{currentYear\} RoleForge AI\. All rights reserved\./);
 });
 
-test("landing footer has a grounded surface, texture, and brand trust block", () => {
+test("landing footer has a grounded surface and brand trust block without a line-field overlay", () => {
   assert.match(section, /\.footer\s*\{(?=[^}]*position:\s*relative)(?=[^}]*isolation:\s*isolate)(?=[^}]*overflow:\s*hidden)(?=[^}]*radial-gradient\(circle at 12% 0%)[^}]*\}/s);
   assert.match(section, /\.footer::before\s*\{(?=[^}]*height:\s*3px)(?=[^}]*linear-gradient\(90deg,\s*transparent,\s*var\(--brand\),\s*var\(--accent\),\s*var\(--sky\),\s*transparent\))(?=[^}]*pointer-events:\s*none)[^}]*\}/s);
-  assert.match(section, /\.footer::after\s*\{(?=[^}]*background-size:\s*52px 52px,\s*24px 24px)(?=[^}]*mask-image:\s*linear-gradient\(180deg,\s*transparent 0%,\s*black 18%,\s*black 70%,\s*transparent 100%\))[^}]*\}/s);
+  assert.doesNotMatch(section, /\.footer::after/);
   assert.match(section, /\.footer-inner,\s*\.footer-meta\s*\{(?=[^}]*position:\s*relative)(?=[^}]*z-index:\s*1)[^}]*\}/s);
   assert.match(section, /\.footer-brand-block\s*\{(?=[^}]*position:\s*relative)(?=[^}]*overflow:\s*hidden)(?=[^}]*padding:\s*18px)(?=[^}]*border-radius:\s*8px)(?=[^}]*box-shadow:)[^}]*\}/s);
   assert.match(section, /\.footer-brand-block::before\s*\{(?=[^}]*height:\s*2px)(?=[^}]*linear-gradient\(90deg,\s*var\(--brand\),\s*var\(--accent\),\s*transparent\))[^}]*\}/s);

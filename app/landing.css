@@ -867,7 +867,7 @@ html.rf-polish-ready :where(.landing-page) :is(.steps, .faq-grid, .cta-band)[dat
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-mono);
-  color: var(--ink-3);
+  color: var(--ink-2);
   font-size: 0.75rem;
   font-weight: 700;
   background: var(--bg);
@@ -3830,20 +3830,6 @@ html[data-theme="dark"] :where(.landing-page) .landing-account-button {
   pointer-events: none;
 }
 
-:where(.landing-page) .footer::after {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--ink-0) 4%, transparent) 1px, transparent 1px),
-    repeating-linear-gradient(135deg, transparent 0 18px, color-mix(in srgb, var(--surface) 34%, transparent) 18px 19px);
-  background-size: 52px 52px, 24px 24px;
-  content: "";
-  mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 70%, transparent 100%);
-  opacity: 0.16;
-  pointer-events: none;
-}
-
 :where(.landing-page) .footer-inner,
 :where(.landing-page) .footer-meta {
   position: relative;
@@ -3980,13 +3966,6 @@ html[data-theme="dark"] :where(.landing-page) .footer {
 html[data-theme="dark"] :where(.landing-page) .footer::before {
   background: linear-gradient(90deg, transparent, #f3c16d, #8fdac8, #b9c7ff, transparent);
   opacity: 0.68;
-}
-
-html[data-theme="dark"] :where(.landing-page) .footer::after {
-  background:
-    linear-gradient(90deg, rgba(255, 247, 233, 0.055) 1px, transparent 1px),
-    repeating-linear-gradient(135deg, transparent 0 18px, rgba(222, 162, 79, 0.055) 18px 19px);
-  opacity: 0.14;
 }
 
 html[data-theme="dark"] :where(.landing-page) .footer-brand-block,
@@ -6001,7 +5980,7 @@ html[data-theme="dark"] :where(.landing-page) .faq-item[open] .faq-toggle {
 
 :where(.landing-page) .template-info .template-tag {
   max-width: 11rem;
-  color: var(--ink-3);
+  color: var(--ink-2);
   font-size: 0.78rem;
   line-height: 1.25;
   text-align: right;

@@ -14,7 +14,8 @@ test("landing links avoid background route churn while scrolling", () => {
 });
 
 test("shared landing artwork and demo actions do not prefetch hidden or protected routes", () => {
-  assert.match(brand, /href=\{href\} aria-label=\{label\} prefetch=\{false\}/);
+  assert.match(brand, /href=\{href\} prefetch=\{false\}/);
+  assert.doesNotMatch(brand, /aria-label=/);
   assert.equal((studioDemo.match(/prefetch=\{false\}/g) || []).length, 4);
   assert.doesNotMatch(studioDemo, /<Link(?![^>]*prefetch=\{false\})[^>]*>/);
 });
