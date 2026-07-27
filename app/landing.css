@@ -10,7 +10,7 @@ html.rf-polish-ready :where(.landing-page) :is(.steps, .faq-grid, .cta-band)[dat
 }
 
 /* Keep the landing scroll range stable while below-the-fold sections are skipped. */
-:where(.landing-page).page-shell > #studio { contain-intrinsic-size: auto 940px; }
+:where(.landing-page).page-shell > #studio { contain-intrinsic-size: auto 1020px; }
 :where(.landing-page).page-shell > #templates { contain-intrinsic-size: auto 690px; }
 :where(.landing-page).page-shell > #features { contain-intrinsic-size: auto 920px; }
 :where(.landing-page).page-shell > #pricing { contain-intrinsic-size: auto 775px; }
@@ -18,7 +18,7 @@ html.rf-polish-ready :where(.landing-page) :is(.steps, .faq-grid, .cta-band)[dat
 :where(.landing-page).page-shell > #final-cta { contain-intrinsic-size: auto 530px; }
 
 @media (max-width: 900px) {
-  :where(.landing-page).page-shell > #studio { contain-intrinsic-size: auto 920px; }
+  :where(.landing-page).page-shell > #studio { contain-intrinsic-size: auto 1330px; }
   :where(.landing-page).page-shell > #templates { contain-intrinsic-size: auto 1330px; }
   :where(.landing-page).page-shell > #features { contain-intrinsic-size: auto 1490px; }
   :where(.landing-page).page-shell > #pricing { contain-intrinsic-size: auto 1300px; }
@@ -761,6 +761,72 @@ html.rf-polish-ready :where(.landing-page) :is(.steps, .faq-grid, .cta-band)[dat
   background: var(--surface);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+}
+
+:where(.landing-page) .dash-demo-deferred {
+  min-width: 0;
+}
+
+:where(.landing-page) .dash-demo-placeholder {
+  container-type: inline-size;
+  max-width: var(--container);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+:where(.landing-page) .dash-demo-placeholder-body {
+  display: grid;
+  min-height: 720px;
+  place-items: center;
+  padding: clamp(28px, 5vw, 56px);
+  background: var(--surface);
+}
+
+:where(.landing-page) .dash-demo-placeholder-copy {
+  display: grid;
+  max-width: 34rem;
+  gap: 8px;
+  text-align: center;
+}
+
+:where(.landing-page) .dash-demo-placeholder-copy strong {
+  color: var(--ink-0);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.12;
+}
+
+:where(.landing-page) .dash-demo-placeholder-copy span {
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+@media (max-width: 1180px) {
+  :where(.landing-page) .dash-demo-placeholder-body {
+    min-height: 735px;
+  }
+}
+
+@media (max-width: 900px) {
+  :where(.landing-page) .dash-demo-placeholder-body {
+    min-height: clamp(928px, calc(1450px - 58vw), 989px);
+  }
+}
+
+@media (max-width: 820px) {
+  :where(.landing-page) .dash-demo-placeholder-body {
+    min-height: 989px;
+  }
+}
+
+@media (max-width: 640px) {
+  :where(.landing-page) .dash-demo-placeholder-body {
+    min-height: clamp(1360px, calc(1565px - 32vw), 1465px);
+  }
 }
 
 :where(.landing-page) .dash-section {

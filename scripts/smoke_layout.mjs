@@ -917,6 +917,13 @@ async function evaluateLayout(send, baseUrl, page, width, options = {}) {
             if (!element) continue;
             element.scrollIntoView({ block: "center", inline: "nearest" });
             await waitForFrames();
+            if (selector === "#studio") {
+              const studioDemoDeadline = performance.now() + 8000;
+              while (!document.querySelector(".dash-demo") && performance.now() < studioDemoDeadline) {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+              }
+              await waitForFrames();
+            }
           }
 
           window.scrollTo(0, 0);
@@ -1440,7 +1447,14 @@ async function evaluateLandingStudioDemo(send, baseUrl) {
   const expression = `(async () => {
     const failures = [];
     const waitForUpdate = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const demo = document.querySelector(".dash-demo");
+    document.querySelector("#studio")?.scrollIntoView({ block: "start" });
+
+    const demoDeadline = performance.now() + 8000;
+    let demo = document.querySelector(".dash-demo");
+    while (!demo && performance.now() < demoDeadline) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      demo = document.querySelector(".dash-demo");
+    }
 
     if (!demo) {
       return JSON.stringify({

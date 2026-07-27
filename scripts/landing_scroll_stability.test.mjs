@@ -17,7 +17,7 @@ test("landing sections retain offscreen rendering with calibrated desktop space"
   assert.match(globals, /\/\* Keep the landing scroll range stable while below-the-fold sections are skipped\. \*\//);
 
   for (const [selector, size] of [
-    ["studio", 940],
+    ["studio", 1020],
     ["templates", 690],
     ["features", 920],
     ["pricing", 775],
@@ -29,7 +29,7 @@ test("landing sections retain offscreen rendering with calibrated desktop space"
 });
 
 test("landing intrinsic sizes follow the stacked tablet and mobile layouts", () => {
-  assert.match(globals, /@media \(max-width: 900px\) \{[\s\S]*?\.page-shell > #templates \{ contain-intrinsic-size: auto 1330px; \}[\s\S]*?\.page-shell > #pricing \{ contain-intrinsic-size: auto 1300px; \}[\s\S]*?\.page-shell > #final-cta \{ contain-intrinsic-size: auto 520px; \}[\s\S]*?\}/);
+  assert.match(globals, /@media \(max-width: 900px\) \{[\s\S]*?\.page-shell > #studio \{ contain-intrinsic-size: auto 1330px; \}[\s\S]*?\.page-shell > #templates \{ contain-intrinsic-size: auto 1330px; \}[\s\S]*?\.page-shell > #pricing \{ contain-intrinsic-size: auto 1300px; \}[\s\S]*?\.page-shell > #final-cta \{ contain-intrinsic-size: auto 520px; \}[\s\S]*?\}/);
   assert.match(globals, /@media \(max-width: 640px\) \{[\s\S]*?\.page-shell > #studio \{ contain-intrinsic-size: auto 1785px; \}[\s\S]*?\.page-shell > #templates \{ contain-intrinsic-size: auto 2430px; \}[\s\S]*?\.page-shell > #pricing \{ contain-intrinsic-size: auto 1620px; \}[\s\S]*?\}/);
   assert.match(globals, /@media \(min-width: 401px\) and \(max-width: 640px\) \{[\s\S]*?\.page-shell > #studio \{ contain-intrinsic-size: auto 1752px; \}[\s\S]*?\.page-shell > #features \{ contain-intrinsic-size: auto 1560px; \}[\s\S]*?\.page-shell > #final-cta \{ contain-intrinsic-size: auto 611px; \}[\s\S]*?\}/);
   assert.match(globals, /@media \(min-width: 600px\) and \(max-width: 640px\) \{[\s\S]*?\.page-shell > #templates \{ contain-intrinsic-size: auto 2371px; \}[\s\S]*?\.page-shell > #final-cta \{ contain-intrinsic-size: auto 518px; \}[\s\S]*?\}/);

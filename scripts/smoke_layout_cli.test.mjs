@@ -68,6 +68,7 @@ test("rendered layout smoke exercises template filters and their accessible stat
 
 test("rendered layout smoke exercises the interactive landing Studio sample", () => {
   assert.match(smokeLayout, /async function evaluateLandingStudioDemo\(send, baseUrl\)/);
+  assert.match(smokeLayout, /selector === "#studio"[\s\S]*?studioDemoDeadline[\s\S]*?document\.querySelector\("\.dash-demo"\)/);
   assert.match(smokeLayout, /studio-demo-view-mismatch/);
   assert.match(smokeLayout, /studio-demo-suggestion-state-mismatch/);
   assert.match(smokeLayout, /studio-demo-history-state-mismatch/);

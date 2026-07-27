@@ -5,16 +5,29 @@ import { landingStylesForAssertions } from "./style_sources.mjs";
 
 const landingPage = readFileSync("app/page.tsx", "utf8");
 const demo = readFileSync("app/components/LandingStudioDemo.tsx", "utf8");
+const deferredDemo = readFileSync("app/components/DeferredLandingStudioDemo.tsx", "utf8");
 const globals = landingStylesForAssertions;
 
 test("landing studio is isolated as an honest client-side sample", () => {
   assert.match(demo, /^"use client";/);
-  assert.match(landingPage, /<LandingStudioDemo[\s\S]*?studioHref=\{studioHref\}[\s\S]*?resumePreview=\{<ResumePreview highlight \/>\}[\s\S]*?\/>/);
+  assert.match(landingPage, /<DeferredLandingStudioDemo[\s\S]*?studioHref=\{studioHref\}[\s\S]*?resumePreview=\{<ResumePreview highlight \/>\}[\s\S]*?\/>/);
   assert.doesNotMatch(demo, /from "\.\/ResumePreview"/);
   assert.match(demo, /Interactive sample: nothing is uploaded, saved, generated, or exported here\./);
   assert.match(demo, /data-demo-view=\{activeView\}/);
   assert.doesNotMatch(demo, /fetch\s*\(/);
   assert.doesNotMatch(demo, /\/tailor|checkout|billing|createObjectURL|download=/i);
+});
+
+test("landing studio defers its client bundle until the section approaches", () => {
+  assert.match(deferredDemo, /^"use client";/);
+  assert.match(deferredDemo, /dynamic\([\s\S]*?import\("\.\/LandingStudioDemo"\)[\s\S]*?ssr:\s*false/);
+  assert.match(deferredDemo, /new IntersectionObserver\([\s\S]*?rootMargin:\s*"600px 0px"/);
+  assert.match(deferredDemo, /window\.location\.hash === "#studio"/);
+  assert.match(deferredDemo, /window\.addEventListener\("hashchange", handleHashChange\)/);
+  assert.match(deferredDemo, /className="dash-demo-placeholder-body" role="status"/);
+  assert.match(deferredDemo, /Preparing the interactive workspace/);
+  assert.match(globals, /\.dash-demo-placeholder-body\s*\{(?=[^}]*min-height:\s*720px)(?=[^}]*place-items:\s*center)[^}]*\}/s);
+  assert.match(globals, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.dash-demo-placeholder-body\s*\{[^}]*min-height:\s*clamp\(1360px, calc\(1565px - 32vw\), 1465px\)[^}]*\}/s);
 });
 
 test("landing studio exposes keyboard-operable sample views and state", () => {

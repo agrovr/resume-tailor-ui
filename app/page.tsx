@@ -5,10 +5,10 @@ import type { ComponentProps } from "react";
 import { AccountAvatar } from "./components/AccountAvatar";
 import { AccountReferenceCopyButton } from "./components/AccountReferenceCopyButton";
 import { Brand } from "./components/Brand";
+import { DeferredLandingStudioDemo } from "./components/DeferredLandingStudioDemo";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { LandingAnchorBootstrap } from "./components/LandingAnchorBootstrap";
 import { LandingAnchorSync } from "./components/LandingAnchorSync";
-import { LandingStudioDemo } from "./components/LandingStudioDemo";
 import { ResumePreview } from "./components/ResumePreview";
 import { RESUME_TEMPLATES } from "./lib/resumeTemplates";
 import { RoleForgeIcon } from "./components/RoleForgeIcons";
@@ -386,7 +386,7 @@ function StudioPreview({ studioHref }: Pick<LandingLinks, "studioHref">) {
           </div>
           <p className="lede">A focused workspace that shows your resume, the job, and generated suggestions side-by-side. Fit signals, gaps, and export controls stay in one calm panel.</p>
         </div>
-        <LandingStudioDemo
+        <DeferredLandingStudioDemo
           studioHref={studioHref}
           resumePreview={<ResumePreview highlight />}
         />
