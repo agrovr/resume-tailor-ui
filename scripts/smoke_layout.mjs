@@ -856,6 +856,36 @@ async function verifySignedInBrowserSession(send, baseUrl) {
   }
 }
 
+async function navigateAndWaitForDocument(send, url, settleMs) {
+  await send("Page.navigate", { url });
+  await delay(settleMs);
+  await send("Runtime.evaluate", {
+    awaitPromise: true,
+    returnByValue: true,
+    expression: `new Promise((resolve) => {
+      const done = () => resolve(Boolean(document.documentElement));
+      if (document.documentElement && document.readyState !== "loading") {
+        done();
+        return;
+      }
+      document.addEventListener("DOMContentLoaded", done, { once: true });
+      setTimeout(done, 2200);
+    })`,
+  });
+}
+
+async function documentHasSelector(send, selector) {
+  const result = await send("Runtime.evaluate", {
+    expression: `Boolean(document.querySelector(${JSON.stringify(selector)}))`,
+    returnByValue: true,
+  });
+  if (result.error) throw new Error(result.error.message);
+  if (result.result.exceptionDetails) {
+    throw new Error(result.result.exceptionDetails.text || "Rendered layout shell probe failed");
+  }
+  return Boolean(result.result.result.value);
+}
+
 async function evaluateLayout(send, baseUrl, page, width, options = {}) {
   const themes = page.requiresAuth ? ["account"] : PUBLIC_THEMES;
   const reports = [];
@@ -870,21 +900,14 @@ async function evaluateLayout(send, baseUrl, page, width, options = {}) {
   for (const theme of themes) {
     const url = new URL(`${baseUrl}${page.path}`);
     if (theme !== "account") url.searchParams.set("theme", theme);
-    await send("Page.navigate", { url: url.toString() });
-    await delay(page.requiresAuth ? 3200 : 1800);
-    await send("Runtime.evaluate", {
-      awaitPromise: true,
-      returnByValue: true,
-      expression: `new Promise((resolve) => {
-        const done = () => resolve(Boolean(document.documentElement));
-        if (document.documentElement && document.readyState !== "loading") {
-          done();
-          return;
-        }
-        document.addEventListener("DOMContentLoaded", done, { once: true });
-        setTimeout(done, 2200);
-      })`,
-    });
+    const settleMs = page.requiresAuth ? 3200 : 1800;
+    await navigateAndWaitForDocument(send, url.toString(), settleMs);
+
+    const authenticatedShell = page.requiresAuth ? page.selectors?.[0] : null;
+    if (authenticatedShell && !(await documentHasSelector(send, authenticatedShell))) {
+      console.warn(`RETRY ${page.name} width=${width} because ${authenticatedShell} was missing after navigation`);
+      await navigateAndWaitForDocument(send, url.toString(), settleMs);
+    }
 
     let scrollStability = null;
     if (page.scrollStabilityCheck) {

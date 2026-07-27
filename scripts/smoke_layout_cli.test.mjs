@@ -82,3 +82,13 @@ test("rendered layout smoke exercises the interactive landing Studio sample", ()
   assert.match(smokeLayout, /\{ selector: "\.dash-resume-thumb \.r-doc", minFill: 0\.78, maxFill: 0\.98 \}/);
   assert.match(smokeLayout, /pageChecks\.some\(\(pageCheck\) => pageCheck\.name === "landing"\)/);
 });
+
+test("rendered layout smoke retries a missing authenticated shell once", () => {
+  assert.match(smokeLayout, /async function navigateAndWaitForDocument\(send, url, settleMs\)/);
+  assert.match(smokeLayout, /async function documentHasSelector\(send, selector\)/);
+  assert.match(smokeLayout, /const authenticatedShell = page\.requiresAuth \? page\.selectors\?\.\[0\] : null/);
+  assert.match(
+    smokeLayout,
+    /if \(authenticatedShell && !\(await documentHasSelector\(send, authenticatedShell\)\)\) \{[\s\S]*?RETRY \$\{page\.name\} width=\$\{width\} because \$\{authenticatedShell\} was missing after navigation[\s\S]*?await navigateAndWaitForDocument\(send, url\.toString\(\), settleMs\);[\s\S]*?\}/,
+  );
+});
