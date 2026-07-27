@@ -6046,6 +6046,8 @@ html[data-theme="dark"] :where(.landing-page) .template-card {
   :where(.landing-page) .template-card {
     width: min(100%, 350px);
     margin-inline: auto;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
   }
 
   :where(.landing-page) .template-info .template-tag {

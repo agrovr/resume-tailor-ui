@@ -77,4 +77,8 @@ test("featured gallery removes the horizontal rail and document rule clutter", (
   assert.match(globalStyles, /\.r-section-title::after\s*\{[^}]*content:\s*none;/s);
   assert.match(stylesheet, /\.r-section-title\s*\{(?=[^}]*border:\s*0)(?=[^}]*padding:\s*0)[^}]*\}/s);
   assert.match(stylesheet, /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.templates-row\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(
+    landingStyles,
+    /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.template-card\s*\{(?=[^}]*width:\s*min\(100%,\s*350px\))(?=[^}]*content-visibility:\s*auto)(?=[^}]*contain-intrinsic-size:\s*auto 500px)[^}]*\}/s,
+  );
 });
