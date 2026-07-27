@@ -358,6 +358,17 @@
   margin: 0 auto;
 }
 
+@media (min-width: 1600px) {
+  .templates-page-grid {
+    width: min(1440px, 100%);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .templates-page-card {
+    contain-intrinsic-size: auto 800px;
+  }
+}
+
 .templates-page-card {
   min-width: 0;
   overflow: hidden;
@@ -877,7 +888,7 @@ html[data-theme="dark"] .templates-page-card.selected {
   }
 }
 
-@media (min-width: 901px) {
+@media (min-width: 901px) and (max-width: 1599px) {
   .templates-page-card:last-child:nth-child(odd) {
     width: calc((100% - 16px) / 2);
     grid-column: 1 / -1;

@@ -57,7 +57,8 @@ test("template papers scale their content and defer offscreen card painting", ()
   assert.match(section, /\.templates-page-card \.template-thumb,\s*\.templates-hero-thumb\s*\{(?=[^}]*aspect-ratio:\s*8\.5\s*\/\s*11)(?=[^}]*container-type:\s*inline-size)[^}]*\}/s);
   assert.match(section, /@supports\s*\(font-size:\s*1cqi\)\s*\{[\s\S]*?\.templates-page-card \.r-doc,[\s\S]*?padding:\s*5\.2cqi 5\.7cqi;[\s\S]*?\.templates-hero-thumb \.r-doc \.r-copy,[\s\S]*?font-size:\s*1\.62cqi;/s);
   assert.match(globals, /\.templates-page-grid\s*\{(?=[^}]*width:\s*min\(1100px,\s*100%\))(?=[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(min\(100%,\s*320px\),\s*1fr\)\))[^}]*\}/s);
-  assert.match(section, /@media\s*\(min-width:\s*901px\)\s*\{[\s\S]*?\.templates-page-card:last-child:nth-child\(odd\)\s*\{(?=[^}]*width:\s*calc\(\(100% - 16px\) \/ 2\))(?=[^}]*grid-column:\s*1 \/ -1)(?=[^}]*justify-self:\s*center)[^}]*\}/s);
+  assert.match(globals, /@media\s*\(min-width:\s*1600px\)\s*\{[\s\S]*?\.templates-page-grid\s*\{(?=[^}]*width:\s*min\(1440px,\s*100%\))(?=[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\))[^}]*\}[\s\S]*?\.templates-page-card\s*\{[^}]*contain-intrinsic-size:\s*auto 800px;/s);
+  assert.match(section, /@media\s*\(min-width:\s*901px\)\s*and\s*\(max-width:\s*1599px\)\s*\{[\s\S]*?\.templates-page-card:last-child:nth-child\(odd\)\s*\{(?=[^}]*width:\s*calc\(\(100% - 16px\) \/ 2\))(?=[^}]*grid-column:\s*1 \/ -1)(?=[^}]*justify-self:\s*center)[^}]*\}/s);
 });
 
 test("templates hero preview stays responsive without decorative motion", () => {
